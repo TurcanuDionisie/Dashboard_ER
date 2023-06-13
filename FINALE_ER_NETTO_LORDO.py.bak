@@ -12,7 +12,6 @@ sheet_name = "Quota Pubb Rettificata"
 qpubb_MGF = pd.read_excel(file_path, sheet_name=sheet_name, index_col=0)
 qpubb_MGF = qpubb_MGF.iloc[2:]
 
-#ciao 
 
 file_path = "I:/Documenti/File PMC/In Corso/par - universo ch mif sintesi.xlsx" 
 sheet_name = "Q.ta Pubblicata"
