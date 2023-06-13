@@ -6,6 +6,7 @@ directory = r'G:\Analisi e Performance Prodotti\Prodotti\Analisi Offerta di Prod
 os.chdir(directory)
 
 
+
 # %% QUOTA NETTA
 file_path = "I:/Documenti/File PMC/In Corso/a&p - universo mgf italiani.xlsx" 
 sheet_name = "Quota Pubb Rettificata"
