@@ -5,6 +5,10 @@ import numpy as np
 directory = r'G:\Analisi e Performance Prodotti\Prodotti\Analisi Offerta di Prodotto\Presidenza Funds Performance & Positioning\2023\2023.06\python'
 os.chdir(directory)
 
+
+#ciao 123#ciao 123#ciao 123#ciao 123#ciao 123#ciao 123#ciao 123
+
+
 #ciao 123
 # %% QUOTA NETTA
 file_path = "I:/Documenti/File PMC/In Corso/a&p - universo mgf italiani.xlsx" 
