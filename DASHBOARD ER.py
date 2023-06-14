@@ -363,104 +363,69 @@ app.layout = html.Div([
     
     # TABELLA INPUT
     html.Div([
-    html.Table([
-        html.Tr([
-            html.Th('Data Primo Versamento (Fine Mese)', style={'text-align': 'center','backgroundColor': 'royalblue',
-            'color': 'white', 'fontSize':'0.75vw'}),
-            html.Th('Importo (Min. €30.000)', style={'text-align': 'center','backgroundColor': 'royalblue',
-            'color': 'white', 'fontSize':'0.75vw'}),
-            html.Th('Durata', style={'text-align': 'center','backgroundColor': 'royalblue',
-            'color': 'white', 'fontSize':'0.75vw'}),
-            html.Th('Importo Rata Totale', style={'text-align': 'center','backgroundColor': 'royalblue',
-            'color': 'white', 'fontSize':'0.75vw'}),
-        ], style={'border': '1px solid black'}),
         
-        html.Tr([
-            html.Td(dcc.Dropdown(
-                id='start_date',
-                options=[{'label': date, 'value': date} for date in dates],
-                value=dates[0]), style={'text-align': 'center','border': '1px solid black', 'fontSize':'0.75vw'}),
-            html.Td(dcc.Input(
-                id='importo',
-                type='number',
-                min=30000,style={'position': 'sticky', 'top': '0'} ), style={'text-align': 'center','border': '1px solid black', 'fontSize':'0.75vw'}),
-           html.Td(dcc.RadioItems(
-               id='durata_months',
-               options=[{'label': i, 'value': i} for i in [36, 48, 60]],
-               value=36,
-               labelStyle={'display': 'inline-block', 'margin-right': '10px'},
-               style={'display': 'inline-block', 'margin':'0px'} ), style={'text-align': 'center','border': '1px solid black', 'fontSize':'0.75vw'}),
-           html.Td(html.Div(id='installment-amount', style={'display': 'inline-block'}), style={'text-align': 'center','border': '1px solid black','fontSize':'0.75vw'})
-           
-        ],style={'border': '1px solid black'}),
-        # ],style={'width': '60%', 'table-layout': 'adaptive','marginTop': '50px', 'marginLeft': '100px','border': '1px solid black'}),
+        #FILTRO DATA
+        html.Div(
+            [
+                dcc.DatePickerSingle(
+                    id='date_picker',
+                    date=None
+                ),
+                html.Div(id='date_error')
+            ]
+        ),
+        
+        # FILTRO SOCIETà
+        html.Div(
+            [
+                dcc.RadioItems(
+                    id='societa',
+                    options=[{'label': i, 'value': i} for i in ['ALL', 'MIF+GAMAX', 'MGF']],
+                    value=36
+                )
+            ]            
+        ),
+        
+        #FILTRO ASSET CLASS
+        html.Div(
+            [
+                dcc.RadioItems(
+                    id='asset_class',
+                    options=[{'label': i, 'value': i} for i in ['ALL', 'Equity', 'Fixed Income','Multi Asset']],
+                    value=36
+                )
+            ]            
+        ),
 
-        html.Tr([
-            html.Th('Comparto', style={'text-align': 'center','backgroundColor': 'royalblue',
-            'color': 'white','fontSize':'0.75vw'}),
-            html.Th('Ripartizione (0% - 100%)', style={'text-align': 'center','backgroundColor': 'royalblue',
-            'color': 'white','fontSize':'0.75vw'}),
-            html.Th('Soglia Automatic Step-Out', style={'text-align': 'center','backgroundColor': 'royalblue',
-            'color': 'white','fontSize':'0.75vw'}),
-            html.Th('Importo Rata', style={'text-align': 'center','backgroundColor': 'royalblue',
-            'color': 'white','fontSize':'0.75vw'})            
-        ], style={'border': '1px solid black'}),
-        # table rows
-        html.Tr([
-            html.Td(dcc.Dropdown(id='fondo1', options=[{'label': fondo, 'value': fondo} for fondo in nomi], value='-'), style={'text-align': 'center','border': '1px solid black','fontSize':'0.75vw'}),
-            
-            html.Td(dcc.Input(id='input1', type='number',min=0, value = 0), style={'text-align': 'center','border': '1px solid black','fontSize':'0.75vw'}),
-            html.Td(dcc.Dropdown(id='step_out1', options=[
-                                          {'label': '-', 'value': '-'},
-                                          {'label': '10%', 'value': '10%'},
-                                          {'label': '20%', 'value': '20%'}], value = '-'), style={'text-align': 'center','border': '1px solid black','fontSize':'0.75vw'}),
-            html.Td(id='rata1', style={'text-align': 'center','border': '1px solid black'})
+        #FILTRO RANKING SI/NO
+        html.Div(
+            [
+                dcc.RadioItems(
+                    id='ranking',
+                    options=[{'label': i, 'value': i} for i in ['SI', 'NO']],
+                    value=36
+                )
+            ]            
+        ),
 
-        ],style={'border': '1px solid black'}),
-        html.Tr([
-            html.Td(dcc.Dropdown(id='fondo2', options=[{'label': fondo, 'value': fondo} for fondo in nomi], value='-'), style={'text-align': 'center','border': '1px solid black','fontSize':'0.75vw'}),
-            html.Td(dcc.Input(id='input2', type='number',min=0, value = 0), style={'text-align': 'center','border': '1px solid black','fontSize':'0.75vw'}),
-            html.Td(dcc.Dropdown(id='step_out2', options=[
-                                          {'label': '-', 'value': '-'},
-                                          {'label': '10%', 'value': '10%'},
-                                          {'label': '20%', 'value': '20%'}], value = '-'), style={'text-align': 'center','border': '1px solid black','fontSize':'0.75vw'}),
-            html.Td(id='rata2', style={'text-align': 'center','border': '1px solid black',})
+        #FILTRO MEDIA SI/NO
+        html.Div(
+            [
+                dcc.RadioItems(
+                    id='media',
+                    options=[{'label': i, 'value': i} for i in ['Semplice', 'Ponderata per NAV']],
+                    value=36
+                )
+            ]            
+        ),
+        
 
-        ]),
-        html.Tr([
-            html.Td(dcc.Dropdown(id='fondo3', options=[{'label': fondo, 'value': fondo} for fondo in nomi], value='-'), style={'text-align': 'center','border': '1px solid black','fontSize':'0.75vw'}),
-            html.Td(dcc.Input(id='input3', type='number',min=0, value = 0), style={'text-align': 'center','border': '1px solid black','fontSize':'0.75vw'}),
-            html.Td(dcc.Dropdown(id='step_out3', options=[
-                                          {'label': '-', 'value': '-'},
-                                          {'label': '10%', 'value': '10%'},
-                                          {'label': '20%', 'value': '20%'}], value = '-'), style={'text-align': 'center','border': '1px solid black','fontSize':'0.75vw'}),
-            html.Td(id='rata3', style={'text-align': 'center','border': '1px solid black'})
-
-        ],style={'border': '1px solid black'}),
-    ],style={'width': '60%', 'table-layout': 'adaptive','marginTop': '50px','border': '1px solid black'})
-
-    ], style={'display': 'flex', 'justify-content': 'center', 'margin-top': '10px'}), 
+    ], style={'display': 'flex', 'justify-content': 'center', 'margin-top': '10px'}),
     
-    
-    
-    
-    #MESSAGGIO ROSSO/VERDE SOTTO TABELLA
-    html.Div(id='output',style={'margin': 'auto', 'justify-content': 'center','display': 'flex'}),
-    
-    # BOTTONI PER FILTRO
-    html.Div([
-        html.Div([
-            html.Button('Look Through Comparto 1', id='btn-nclicks-1', style={'margin-right': '20px', 'fontSize':'0.75vw'}),
-            html.Button('Look Through Comparto 2', id='btn-nclicks-2', style={'margin-right': '20px', 'fontSize':'0.75vw'}),
-            html.Button('Look Through Comparto 3', id='btn-nclicks-3', style={'margin-right': '20px', 'fontSize':'0.75vw'}),
-            html.Button('Complessivo', id='btn-nclicks-all', style={'fontSize':'0.75vw'})
-        ], style={'display': 'flex', 'justify-content': 'center', 'margin-top': '30px'})
-    ]),
     
     #GRAFICI GROSSI
     html.Div(children=[
-    dcc.Graph(id='grafico_iis', style={'height': '70%', 'width': '100%', 'display': 'block'}, config={'displayModeBar': False}),   
-    dcc.Graph(id='istogramma', style={'height': '30%', 'width': '100%', 'display': 'block', 'margin-top': '0px'}, config={'displayModeBar': False})
+    dcc.Graph(id='grafico_er', style={'height': '100%', 'width': '100%', 'display': 'block'}, config={'displayModeBar': False})
     ], style={'height': '1000px','justify-content': 'center'}),           
     
     
@@ -503,116 +468,397 @@ app.layout = html.Div([
 
 
 
-html.Div(
-    [
-        html.Div(
-            [
-                html.Div([
-                    
-                    dash_table.DataTable(
-                        id='step_in',
-                        columns=[{"name": i, "id": i} for i in step_in_df],
-                        data=None,
-                        editable=False,
-                        style_table={
-                            'maxWidth': '10%',
-                            'margin': 'auto',
-                            'marginLeft': '20px',
-                            'marginTop': '20px'  # add margin to the top
-                        },
-                        style_header={
-                            'backgroundColor': 'royalblue',
-                            'color': 'white',
-                            'fontWeight': 'bold',
-                            'text-align': 'center'
-                        },
-                        style_cell={'textAlign': 'center', 'fontSize':'0.75vw'}
-                    )],
-                    className="six columns",
-                    style={"display": "inline-block",'text-align': 'center'}
-                ),
-                html.Div(
-                    dash_table.DataTable(
-                        id='step_out',
-                        columns=[{"name": i, "id": i} for i in step_out_df],
-                        data=None,
-                        editable=False,
-                        style_table={
-                            'maxWidth': '10%',
-                            'margin': 'auto',
-                            'marginLeft': '20px',
-                            'marginTop': '20px',
-                            
-                            # add margin to the top
-                        },
-                        style_header={
-                            'backgroundColor': 'royalblue',
-                            'color': 'white',
-                            'fontWeight': 'bold',
-                            'text-align': 'center'
-                        },
-                        style_cell={'textAlign': 'center', 'fontSize':'0.75vw'}
-                    ),
-                    className="six columns",
-                    style={"display": "inline-block",'text-align': 'center'}
-                ),
-            ],
-            style={"display": "flex", 'text-align': 'center','justify-content': 'center','width':'100%','marginTop':'20px'}
-        )
-    ]
-),
-
-     # 3 GRAFICI PICCOLI
-     html.Div(children=[html.H1("Prezzo vs Prezzo Medio di Carico vs Prezzo Medio", style={"font-size": "0.9vw","text-align": "center"}),
-                        dcc.Graph(id='pmc1', style={'width': '33%','height':'80%', 'display': 'inline-block'},config={'displayModeBar': False}),
-                        dcc.Graph(id='pmc2', style={'width': '33%', 'height':'80%','display': 'inline-block'},config={'displayModeBar': False}),
-                        dcc.Graph(id='pmc3', style={'width': '33%', 'height':'80%','display': 'inline-block'},config={'displayModeBar': False})
-                        ], style={'height': '300px', 'margin': 'auto', 'justify-content': 'center','marginTop':'40px'})
-    
-     ]) 
+ ]) 
 
 #%% 
-
-# Define callbacks
 @app.callback(
-    Output('amount-error', 'children'),
-    Input('importo', 'value')
+    Output('date_error', 'children'),
+    [Input('date_picker', 'date')]
 )
-def check_amount(amount):
-    if amount is not None and amount < 30000:
-        return 'Minimo investito deve essere almeno €30.000'
-
+def update_output(date):
+    if date is not None:
+        return f"The selected date is {date}"
+    else:
+        return "Please select a date."
+    
 
 @app.callback(
-    [Output('grafico_iis', 'figure'),
-     Output('istogramma', 'figure'),
-     Output('stats', 'data'),
-     Output('step_in', 'data'),
-     Output('step_out', 'data'),
-     Output('pmc1', 'figure'),
-     Output('pmc2', 'figure'),
-     Output('pmc3', 'figure')],
-    [Input('start_date', 'value'),
-     Input('importo', 'value'),
-     Input('durata_months', 'value'),
-     Input('fondo1', 'value'),
-     Input('fondo2', 'value'),
-     Input('fondo3', 'value'),
-     Input('input1', 'value'),
-     Input('input2', 'value'),
-     Input('input3', 'value'),
-     Input('step_out1', 'value'),
-     Input('step_out2', 'value'),
-     Input('step_out3', 'value'),
-     Input('btn-nclicks-1', 'n_clicks'),
-     Input('btn-nclicks-2', 'n_clicks'),
-     Input('btn-nclicks-3', 'n_clicks'),
-     Input('btn-nclicks-all', 'n_clicks'),
-     ]
+    [Output('grafico_er', 'figure'),
+],
+    [Input('date_picker', 'date'),
+      Input('societa', 'value'),
+      Input('asset_class', 'value'),
+      Input('ranking', 'value'),
+      Input('media', 'value'),
+      ]
 )
 
-def motore(start_date, importo, durata_months, fondo1, fondo2, fondo3, input1, input2, input3, step_out1, step_out2, step_out3, btn1, btn2, btn3, btnall ):
+def motore(date_picker, societa, asset_class, ranking, media):
+    
+    if date_picker is not None and societa is not None and asset_class is not None and ranking is not None and media is not None :
+
+        # %% CALCOLO PERFORMANCE
+        ret_quota_netta = quota_netta.pct_change()[1:]
+        ret_quota_lorda = quota_lorda.pct_change()[1:]
+        ret_bmk = bmk.pct_change()[1:]
+        ret_categoria = cat_morningstar.pct_change()[1:]
+
+        #filtro per data inizio
+        ret_quota_netta = ret_quota_netta[ret_quota_netta.index >= date_picker]
+        ret_quota_lorda = ret_quota_lorda[ret_quota_lorda.index >= date_picker]
+        ret_bmk = ret_bmk[ret_bmk.index >= date_picker]
+        ret_categoria = ret_categoria[ret_categoria.index >= date_picker]
+        
+        print(ret_categoria.iloc[0])
+        #%% calcolo cumulative da data inizio
+
+        # #NETTA
+        # cum_quota_netta = pd.DataFrame(columns=ret_quota_netta.columns, index = ret_quota_netta.index)
+        # cum_quota_netta.iloc[0] = 1
+        # for i in range(1,len(cum_quota_netta)):
+        #     cum_quota_netta.iloc[i] = cum_quota_netta.iloc[i-1] * ( 1 + ret_quota_netta.iloc[i])
+        # cum_quota_netta = cum_quota_netta -1
+            
+        # #LORDA    
+        # cum_quota_lorda = pd.DataFrame(columns=ret_quota_lorda.columns, index = ret_quota_lorda.index)
+        # cum_quota_lorda.iloc[0] = 1
+        # for i in range(1,len(cum_quota_lorda)):
+        #     cum_quota_lorda.iloc[i] = cum_quota_lorda.iloc[i-1] * ( 1 + ret_quota_lorda.iloc[i])
+        # cum_quota_lorda = cum_quota_lorda -1
+
+        # #BMK
+        # cum_bmk = pd.DataFrame(columns=ret_bmk.columns, index = ret_bmk.index)
+        # cum_bmk.iloc[0] = 1
+        # for i in range(1,len(cum_bmk)):
+        #     cum_bmk.iloc[i] = cum_bmk.iloc[i-1] * ( 1 + ret_bmk.iloc[i])
+        # cum_bmk = cum_bmk -1
+
+        # #CATEGORIA
+        # cum_categoria = pd.DataFrame(columns=ret_categoria.columns, index = ret_categoria.index)
+        # cum_categoria.iloc[0] = 1
+        # for i in range(1,len(cum_categoria)):
+        #     cum_categoria.iloc[i] = cum_categoria.iloc[i-1] * ( 1 + ret_categoria.iloc[i])
+        # cum_categoria = cum_categoria -1
 
 
 
+        # #%% all LORDO
+        # codifiche = codifiche_all[(codifiche_all['BMK'] == 'SI')]
+
+
+        # decodifica_bmk = codifiche[['serve per BMK']]
+        # map_dict = decodifica_bmk.to_dict().get('serve per BMK')
+
+        # isin = codifiche[(codifiche['BMK'] == 'SI')].index
+        # ret = ret_quota_lorda[isin][ret_quota_lorda.index >= '06/30/2022']
+
+        # nav_lordo = nav_lordo_all[isin].copy()
+        # for t in nav_lordo.index:
+        #     nav_lordo.loc[t] = nav_lordo.loc[t]/sum(nav_lordo.loc[t])
+
+        # alfa = ret.copy()
+        # for i in ret.columns:
+        #     alfa[i] = ret_bmk[map_dict[i]]
+
+        # ret_pond = ret * nav_lordo[isin][nav_lordo.index >= '06/30/2022']
+        # ret_pond = ret_pond.sum(axis=1)
+        # alfa_pond = alfa * nav_lordo[isin][nav_lordo.index >= '06/30/2022']
+        # alfa_pond = alfa_pond.sum(axis=1)
+
+        # cum_ret = pd.Series(index = ret_pond.index)
+        # cum_ret.iloc[0] = 1
+        # for i in range(1,len(cum_ret)):
+        #     cum_ret.iloc[i] = cum_ret.iloc[i-1] * ( 1 + ret_pond.iloc[i])
+        # cum_ret = cum_ret -1
+
+
+        # cum_alfa = pd.Series(index = alfa_pond.index)
+        # cum_alfa.iloc[0] = 1
+        # for i in range(1,len(cum_ret)):
+        #     cum_alfa.iloc[i] = cum_alfa.iloc[i-1] * ( 1 + alfa_pond.iloc[i])
+        # cum_alfa = cum_alfa -1
+
+
+        # er_lordo = cum_ret - cum_alfa
+        # pesi_er_lordo = nav_lordo.iloc[-1]
+        # #%% LORDO FIXED INCOME
+        # codifiche = codifiche_all[(codifiche_all['BMK'] == 'SI') & (codifiche_all['Asset class'] == 'FixedIncome')]
+
+
+        # decodifica_bmk = codifiche[['serve per BMK']]
+        # map_dict = decodifica_bmk.to_dict().get('serve per BMK')
+
+        # isin = codifiche[(codifiche['BMK'] == 'SI')].index
+        # ret = ret_quota_lorda[isin][ret_quota_lorda.index >= '06/30/2022']
+
+        # nav_lordo = nav_lordo_all[isin].copy()
+        # for t in nav_lordo.index:
+        #     nav_lordo.loc[t] = nav_lordo.loc[t]/sum(nav_lordo.loc[t])
+
+        # alfa = ret.copy()
+        # for i in ret.columns:
+        #     alfa[i] = ret_bmk[map_dict[i]]
+
+        # ret_pond = ret * nav_lordo[isin][nav_lordo.index >= '06/30/2022']
+        # ret_pond = ret_pond.sum(axis=1)
+        # alfa_pond = alfa * nav_lordo[isin][nav_lordo.index >= '06/30/2022']
+        # alfa_pond = alfa_pond.sum(axis=1)
+
+        # cum_ret = pd.Series(index = ret_pond.index)
+        # cum_ret.iloc[0] = 1
+        # for i in range(1,len(cum_ret)):
+        #     cum_ret.iloc[i] = cum_ret.iloc[i-1] * ( 1 + ret_pond.iloc[i])
+        # cum_ret = cum_ret -1
+
+
+        # cum_alfa = pd.Series(index = alfa_pond.index)
+        # cum_alfa.iloc[0] = 1
+        # for i in range(1,len(cum_ret)):
+        #     cum_alfa.iloc[i] = cum_alfa.iloc[i-1] * ( 1 + alfa_pond.iloc[i])
+        # cum_alfa = cum_alfa -1
+
+
+        # er_lordo_fi = cum_ret - cum_alfa
+        # pesi_er_lordo_fi = nav_lordo.iloc[-1]
+        # #%% LORDO MULTI ASSET
+        # codifiche = codifiche_all[(codifiche_all['BMK'] == 'SI') & (codifiche_all['Asset class'] == 'MultiAsset')]
+
+
+        # decodifica_bmk = codifiche[['serve per BMK']]
+        # map_dict = decodifica_bmk.to_dict().get('serve per BMK')
+
+        # isin = codifiche[(codifiche['BMK'] == 'SI')].index
+        # ret = ret_quota_lorda[isin][ret_quota_lorda.index >= '06/30/2022']
+
+        # nav_lordo = nav_lordo_all[isin].copy()
+        # for t in nav_lordo.index:
+        #     nav_lordo.loc[t] = nav_lordo.loc[t]/sum(nav_lordo.loc[t])
+
+        # alfa = ret.copy()
+        # for i in ret.columns:
+        #     alfa[i] = ret_bmk[map_dict[i]]
+
+        # ret_pond = ret * nav_lordo[isin][nav_lordo.index >= '06/30/2022']
+        # ret_pond = ret_pond.sum(axis=1)
+        # alfa_pond = alfa * nav_lordo[isin][nav_lordo.index >= '06/30/2022']
+        # alfa_pond = alfa_pond.sum(axis=1)
+
+        # cum_ret = pd.Series(index = ret_pond.index)
+        # cum_ret.iloc[0] = 1
+        # for i in range(1,len(cum_ret)):
+        #     cum_ret.iloc[i] = cum_ret.iloc[i-1] * ( 1 + ret_pond.iloc[i])
+        # cum_ret = cum_ret -1
+
+
+        # cum_alfa = pd.Series(index = alfa_pond.index)
+        # cum_alfa.iloc[0] = 1
+        # for i in range(1,len(cum_ret)):
+        #     cum_alfa.iloc[i] = cum_alfa.iloc[i-1] * ( 1 + alfa_pond.iloc[i])
+        # cum_alfa = cum_alfa -1
+
+
+        # er_lordo_ma = cum_ret - cum_alfa
+        # pesi_er_lordo_ma = nav_lordo.iloc[-1]
+        # #%% LORDO EQUITY
+        # codifiche = codifiche_all[(codifiche_all['BMK'] == 'SI') & (codifiche_all['Asset class'] == 'Equity')]
+
+
+        # decodifica_bmk = codifiche[['serve per BMK']]
+        # map_dict = decodifica_bmk.to_dict().get('serve per BMK')
+
+        # isin = codifiche[(codifiche['BMK'] == 'SI')].index
+        # ret = ret_quota_lorda[isin][ret_quota_lorda.index >= '06/30/2022']
+
+        # nav_lordo = nav_lordo_all[isin].copy()
+        # for t in nav_lordo.index:
+        #     nav_lordo.loc[t] = nav_lordo.loc[t]/sum(nav_lordo.loc[t])
+
+        # alfa = ret.copy()
+        # for i in ret.columns:
+        #     alfa[i] = ret_bmk[map_dict[i]]
+
+        # ret_pond = ret * nav_lordo[isin][nav_lordo.index >= '06/30/2022']
+        # ret_pond = ret_pond.sum(axis=1)
+        # alfa_pond = alfa * nav_lordo[isin][nav_lordo.index >= '06/30/2022']
+        # alfa_pond = alfa_pond.sum(axis=1)
+
+        # cum_ret = pd.Series(index = ret_pond.index)
+        # cum_ret.iloc[0] = 1
+        # for i in range(1,len(cum_ret)):
+        #     cum_ret.iloc[i] = cum_ret.iloc[i-1] * ( 1 + ret_pond.iloc[i])
+        # cum_ret = cum_ret -1
+
+
+        # cum_alfa = pd.Series(index = alfa_pond.index)
+        # cum_alfa.iloc[0] = 1
+        # for i in range(1,len(cum_ret)):
+        #     cum_alfa.iloc[i] = cum_alfa.iloc[i-1] * ( 1 + alfa_pond.iloc[i])
+        # cum_alfa = cum_alfa -1
+
+
+        # er_lordo_eq = cum_ret - cum_alfa
+        # pesi_er_lordo_eq = nav_lordo.iloc[-1]
+        # # %% ALL NETTO
+        # codifiche = codifiche_all[(codifiche_all['CAT'] == 'SI')]
+
+
+        # decodifica_bmk = codifiche[['serve per CAT M*']]
+        # map_dict = decodifica_bmk.to_dict().get('serve per CAT M*')
+
+        # isin = codifiche[(codifiche['CAT'] == 'SI')].index
+        # ret = ret_quota_netta[isin][ret_quota_netta.index >= '06/30/2022']
+
+        # nav_netto = nav_netto_all[isin].copy()
+        # for t in nav_netto.index:
+        #     nav_netto.loc[t] = nav_netto.loc[t]/sum(nav_netto.loc[t])
+
+        # alfa = ret.copy()
+        # for i in ret.columns:
+        #     alfa[i] = ret_categoria[map_dict[i]]
+
+        # ret_pond = ret * nav_netto[isin][nav_netto.index >= '06/30/2022']
+        # ret_pond = ret_pond.sum(axis=1)
+        # alfa_pond = alfa * nav_netto[isin][nav_netto.index >= '06/30/2022']
+        # alfa_pond = alfa_pond.sum(axis=1)
+
+        # cum_ret = pd.Series(index = ret_pond.index)
+        # cum_ret.iloc[0] = 1
+        # for i in range(1,len(cum_ret)):
+        #     cum_ret.iloc[i] = cum_ret.iloc[i-1] * ( 1 + ret_pond.iloc[i])
+        # cum_ret = cum_ret -1
+
+
+        # cum_alfa = pd.Series(index = alfa_pond.index)
+        # cum_alfa.iloc[0] = 1
+        # for i in range(1,len(cum_ret)):
+        #     cum_alfa.iloc[i] = cum_alfa.iloc[i-1] * ( 1 + alfa_pond.iloc[i])
+        # cum_alfa = cum_alfa -1
+
+
+        # er_netto = cum_ret - cum_alfa
+        # pesi_er_netto = nav_netto.iloc[-1]
+        # # %% NETTO FIXED INCOME
+        # codifiche = codifiche_all[(codifiche_all['CAT'] == 'SI') & (codifiche_all['Asset class'] == 'FixedIncome')]
+         
+
+        # decodifica_bmk = codifiche[['serve per CAT M*']]
+        # map_dict = decodifica_bmk.to_dict().get('serve per CAT M*')
+
+        # isin = codifiche[(codifiche['CAT'] == 'SI')].index
+        # ret = ret_quota_netta[isin][ret_quota_netta.index >= '06/30/2022']
+
+        # nav_netto = nav_netto_all[isin].copy()
+        # for t in nav_netto.index:
+        #     nav_netto.loc[t] = nav_netto.loc[t]/sum(nav_netto.loc[t])
+
+        # alfa = ret.copy()
+        # for i in ret.columns:
+        #     alfa[i] = ret_categoria[map_dict[i]]
+
+        # ret_pond = ret * nav_netto[isin][nav_netto.index >= '06/30/2022']
+        # ret_pond = ret_pond.sum(axis=1)
+        # alfa_pond = alfa * nav_netto[isin][nav_netto.index >= '06/30/2022']
+        # alfa_pond = alfa_pond.sum(axis=1)
+
+        # cum_ret = pd.Series(index = ret_pond.index)
+        # cum_ret.iloc[0] = 1
+        # for i in range(1,len(cum_ret)):
+        #     cum_ret.iloc[i] = cum_ret.iloc[i-1] * ( 1 + ret_pond.iloc[i])
+        # cum_ret = cum_ret -1
+
+
+        # cum_alfa = pd.Series(index = alfa_pond.index)
+        # cum_alfa.iloc[0] = 1
+        # for i in range(1,len(cum_ret)):
+        #     cum_alfa.iloc[i] = cum_alfa.iloc[i-1] * ( 1 + alfa_pond.iloc[i])
+        # cum_alfa = cum_alfa -1
+
+
+        # er_netto_fi = cum_ret - cum_alfa
+        # pesi_er_netto_fi = nav_netto.iloc[-1]
+        # # %% NETTO MULTIASSET
+        # codifiche = codifiche_all[(codifiche_all['CAT'] == 'SI') & (codifiche_all['Asset class'] == 'MultiAsset')]
+
+
+        # decodifica_bmk = codifiche[['serve per CAT M*']]
+        # map_dict = decodifica_bmk.to_dict().get('serve per CAT M*')
+
+        # isin = codifiche[(codifiche['CAT'] == 'SI')].index
+        # ret = ret_quota_netta[isin][ret_quota_netta.index >= '06/30/2022']
+
+        # nav_netto = nav_netto_all[isin].copy()
+        # for t in nav_netto.index:
+        #     nav_netto.loc[t] = nav_netto.loc[t]/sum(nav_netto.loc[t])
+
+        # alfa = ret.copy()
+        # for i in ret.columns:
+        #     alfa[i] = ret_categoria[map_dict[i]]
+
+        # ret_pond = ret * nav_netto[isin][nav_netto.index >= '06/30/2022']
+        # ret_pond = ret_pond.sum(axis=1)
+        # alfa_pond = alfa * nav_netto[isin][nav_netto.index >= '06/30/2022']
+        # alfa_pond = alfa_pond.sum(axis=1)
+
+        # cum_ret = pd.Series(index = ret_pond.index)
+        # cum_ret.iloc[0] = 1
+        # for i in range(1,len(cum_ret)):
+        #     cum_ret.iloc[i] = cum_ret.iloc[i-1] * ( 1 + ret_pond.iloc[i])
+        # cum_ret = cum_ret -1
+
+
+        # cum_alfa = pd.Series(index = alfa_pond.index)
+        # cum_alfa.iloc[0] = 1
+        # for i in range(1,len(cum_ret)):
+        #     cum_alfa.iloc[i] = cum_alfa.iloc[i-1] * ( 1 + alfa_pond.iloc[i])
+        # cum_alfa = cum_alfa -1
+
+
+        # er_netto_ma = cum_ret - cum_alfa
+        # pesi_er_netto_ma = nav_netto.iloc[-1]
+        # # %% NETTO Equity
+        # codifiche = codifiche_all[(codifiche_all['CAT'] == 'SI') & (codifiche_all['Asset class'] == 'Equity')]
+
+
+        # decodifica_bmk = codifiche[['serve per CAT M*']]
+        # map_dict = decodifica_bmk.to_dict().get('serve per CAT M*')
+
+        # isin = codifiche[(codifiche['CAT'] == 'SI')].index
+        # ret = ret_quota_netta[isin][ret_quota_netta.index >= '06/30/2022']
+
+        # nav_netto = nav_netto_all[isin].copy()
+        # for t in nav_netto.index:
+        #     nav_netto.loc[t] = nav_netto.loc[t]/sum(nav_netto.loc[t])
+
+        # alfa = ret.copy()
+        # for i in ret.columns:
+        #     alfa[i] = ret_categoria[map_dict[i]]
+
+        # ret_pond = ret * nav_netto[isin][nav_netto.index >= '06/30/2022']
+        # ret_pond = ret_pond.sum(axis=1)
+        # alfa_pond = alfa * nav_netto[isin][nav_netto.index >= '06/30/2022']
+        # alfa_pond = alfa_pond.sum(axis=1)
+
+        # cum_ret = pd.Series(index = ret_pond.index)
+        # cum_ret.iloc[0] = 1
+        # for i in range(1,len(cum_ret)):
+        #     cum_ret.iloc[i] = cum_ret.iloc[i-1] * ( 1 + ret_pond.iloc[i])
+        # cum_ret = cum_ret -1
+
+
+        # cum_alfa = pd.Series(index = alfa_pond.index)
+        # cum_alfa.iloc[0] = 1
+        # for i in range(1,len(cum_ret)):
+        #     cum_alfa.iloc[i] = cum_alfa.iloc[i-1] * ( 1 + alfa_pond.iloc[i])
+        # cum_alfa = cum_alfa -1
+
+
+        # er_netto_eq = cum_ret - cum_alfa
+        # pesi_er_netto_eq = nav_netto.iloc[-1]
+
+
+
+
+
+if __name__ == '__main__':
+    app.run_server()
 
