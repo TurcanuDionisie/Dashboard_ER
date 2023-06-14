@@ -509,351 +509,118 @@ def motore(date_picker, societa, asset_class, ranking, media):
         ret_bmk = ret_bmk[ret_bmk.index >= date_picker]
         ret_categoria = ret_categoria[ret_categoria.index >= date_picker]
         
-        print(ret_categoria.iloc[0])
         #%% calcolo cumulative da data inizio
 
-        # #NETTA
-        # cum_quota_netta = pd.DataFrame(columns=ret_quota_netta.columns, index = ret_quota_netta.index)
-        # cum_quota_netta.iloc[0] = 1
-        # for i in range(1,len(cum_quota_netta)):
-        #     cum_quota_netta.iloc[i] = cum_quota_netta.iloc[i-1] * ( 1 + ret_quota_netta.iloc[i])
-        # cum_quota_netta = cum_quota_netta -1
+        #NETTA
+        cum_quota_netta = pd.DataFrame(columns=ret_quota_netta.columns, index = ret_quota_netta.index)
+        cum_quota_netta.iloc[0] = 1
+        for i in range(1,len(cum_quota_netta)):
+            cum_quota_netta.iloc[i] = cum_quota_netta.iloc[i-1] * ( 1 + ret_quota_netta.iloc[i])
+        cum_quota_netta = cum_quota_netta -1
             
-        # #LORDA    
-        # cum_quota_lorda = pd.DataFrame(columns=ret_quota_lorda.columns, index = ret_quota_lorda.index)
-        # cum_quota_lorda.iloc[0] = 1
-        # for i in range(1,len(cum_quota_lorda)):
-        #     cum_quota_lorda.iloc[i] = cum_quota_lorda.iloc[i-1] * ( 1 + ret_quota_lorda.iloc[i])
-        # cum_quota_lorda = cum_quota_lorda -1
+        #LORDA    
+        cum_quota_lorda = pd.DataFrame(columns=ret_quota_lorda.columns, index = ret_quota_lorda.index)
+        cum_quota_lorda.iloc[0] = 1
+        for i in range(1,len(cum_quota_lorda)):
+            cum_quota_lorda.iloc[i] = cum_quota_lorda.iloc[i-1] * ( 1 + ret_quota_lorda.iloc[i])
+        cum_quota_lorda = cum_quota_lorda -1
 
-        # #BMK
-        # cum_bmk = pd.DataFrame(columns=ret_bmk.columns, index = ret_bmk.index)
-        # cum_bmk.iloc[0] = 1
-        # for i in range(1,len(cum_bmk)):
-        #     cum_bmk.iloc[i] = cum_bmk.iloc[i-1] * ( 1 + ret_bmk.iloc[i])
-        # cum_bmk = cum_bmk -1
+        #BMK
+        cum_bmk = pd.DataFrame(columns=ret_bmk.columns, index = ret_bmk.index)
+        cum_bmk.iloc[0] = 1
+        for i in range(1,len(cum_bmk)):
+            cum_bmk.iloc[i] = cum_bmk.iloc[i-1] * ( 1 + ret_bmk.iloc[i])
+        cum_bmk = cum_bmk -1
 
-        # #CATEGORIA
-        # cum_categoria = pd.DataFrame(columns=ret_categoria.columns, index = ret_categoria.index)
-        # cum_categoria.iloc[0] = 1
-        # for i in range(1,len(cum_categoria)):
-        #     cum_categoria.iloc[i] = cum_categoria.iloc[i-1] * ( 1 + ret_categoria.iloc[i])
-        # cum_categoria = cum_categoria -1
+        #CATEGORIA
+        cum_categoria = pd.DataFrame(columns=ret_categoria.columns, index = ret_categoria.index)
+        cum_categoria.iloc[0] = 1
+        for i in range(1,len(cum_categoria)):
+            cum_categoria.iloc[i] = cum_categoria.iloc[i-1] * ( 1 + ret_categoria.iloc[i])
+        cum_categoria = cum_categoria -1
 
 
 
-        # #%% all LORDO
-        # codifiche = codifiche_all[(codifiche_all['BMK'] == 'SI')]
+        #%% all LORDO
+        codifiche = codifiche_all[(codifiche_all['BMK'] == 'SI')]
 
 
-        # decodifica_bmk = codifiche[['serve per BMK']]
-        # map_dict = decodifica_bmk.to_dict().get('serve per BMK')
+        decodifica_bmk = codifiche[['serve per BMK']]
+        map_dict = decodifica_bmk.to_dict().get('serve per BMK')
 
-        # isin = codifiche[(codifiche['BMK'] == 'SI')].index
-        # ret = ret_quota_lorda[isin][ret_quota_lorda.index >= '06/30/2022']
+        isin = codifiche[(codifiche['BMK'] == 'SI')].index
+        ret = ret_quota_lorda[isin][ret_quota_lorda.index >= date_picker]
 
-        # nav_lordo = nav_lordo_all[isin].copy()
-        # for t in nav_lordo.index:
-        #     nav_lordo.loc[t] = nav_lordo.loc[t]/sum(nav_lordo.loc[t])
+        nav_lordo = nav_lordo_all[isin].copy()
+        for t in nav_lordo.index:
+            nav_lordo.loc[t] = nav_lordo.loc[t]/sum(nav_lordo.loc[t])
 
-        # alfa = ret.copy()
-        # for i in ret.columns:
-        #     alfa[i] = ret_bmk[map_dict[i]]
+        alfa = ret.copy()
+        for i in ret.columns:
+            alfa[i] = ret_bmk[map_dict[i]]
 
-        # ret_pond = ret * nav_lordo[isin][nav_lordo.index >= '06/30/2022']
-        # ret_pond = ret_pond.sum(axis=1)
-        # alfa_pond = alfa * nav_lordo[isin][nav_lordo.index >= '06/30/2022']
-        # alfa_pond = alfa_pond.sum(axis=1)
+        ret_pond = ret * nav_lordo[isin][nav_lordo.index >= date_picker]
+        ret_pond = ret_pond.sum(axis=1)
+        alfa_pond = alfa * nav_lordo[isin][nav_lordo.index >= date_picker]
+        alfa_pond = alfa_pond.sum(axis=1)
 
-        # cum_ret = pd.Series(index = ret_pond.index)
-        # cum_ret.iloc[0] = 1
-        # for i in range(1,len(cum_ret)):
-        #     cum_ret.iloc[i] = cum_ret.iloc[i-1] * ( 1 + ret_pond.iloc[i])
-        # cum_ret = cum_ret -1
+        cum_ret = pd.Series(index = ret_pond.index)
+        cum_ret.iloc[0] = 1
+        for i in range(1,len(cum_ret)):
+            cum_ret.iloc[i] = cum_ret.iloc[i-1] * ( 1 + ret_pond.iloc[i])
+        cum_ret = cum_ret -1
 
 
-        # cum_alfa = pd.Series(index = alfa_pond.index)
-        # cum_alfa.iloc[0] = 1
-        # for i in range(1,len(cum_ret)):
-        #     cum_alfa.iloc[i] = cum_alfa.iloc[i-1] * ( 1 + alfa_pond.iloc[i])
-        # cum_alfa = cum_alfa -1
+        cum_alfa = pd.Series(index = alfa_pond.index)
+        cum_alfa.iloc[0] = 1
+        for i in range(1,len(cum_ret)):
+            cum_alfa.iloc[i] = cum_alfa.iloc[i-1] * ( 1 + alfa_pond.iloc[i])
+        cum_alfa = cum_alfa -1
 
 
-        # er_lordo = cum_ret - cum_alfa
-        # pesi_er_lordo = nav_lordo.iloc[-1]
-        # #%% LORDO FIXED INCOME
-        # codifiche = codifiche_all[(codifiche_all['BMK'] == 'SI') & (codifiche_all['Asset class'] == 'FixedIncome')]
+        er_lordo = cum_ret - cum_alfa
+        pesi_er_lordo = nav_lordo.iloc[-1]
 
+        # %% ALL NETTO
+        codifiche = codifiche_all[(codifiche_all['CAT'] == 'SI')]
 
-        # decodifica_bmk = codifiche[['serve per BMK']]
-        # map_dict = decodifica_bmk.to_dict().get('serve per BMK')
 
-        # isin = codifiche[(codifiche['BMK'] == 'SI')].index
-        # ret = ret_quota_lorda[isin][ret_quota_lorda.index >= '06/30/2022']
+        decodifica_bmk = codifiche[['serve per CAT M*']]
+        map_dict = decodifica_bmk.to_dict().get('serve per CAT M*')
 
-        # nav_lordo = nav_lordo_all[isin].copy()
-        # for t in nav_lordo.index:
-        #     nav_lordo.loc[t] = nav_lordo.loc[t]/sum(nav_lordo.loc[t])
+        isin = codifiche[(codifiche['CAT'] == 'SI')].index
+        ret = ret_quota_netta[isin][ret_quota_netta.index >= date_picker]
 
-        # alfa = ret.copy()
-        # for i in ret.columns:
-        #     alfa[i] = ret_bmk[map_dict[i]]
+        nav_netto = nav_netto_all[isin].copy()
+        for t in nav_netto.index:
+            nav_netto.loc[t] = nav_netto.loc[t]/sum(nav_netto.loc[t])
 
-        # ret_pond = ret * nav_lordo[isin][nav_lordo.index >= '06/30/2022']
-        # ret_pond = ret_pond.sum(axis=1)
-        # alfa_pond = alfa * nav_lordo[isin][nav_lordo.index >= '06/30/2022']
-        # alfa_pond = alfa_pond.sum(axis=1)
+        alfa = ret.copy()
+        for i in ret.columns:
+            alfa[i] = ret_categoria[map_dict[i]]
 
-        # cum_ret = pd.Series(index = ret_pond.index)
-        # cum_ret.iloc[0] = 1
-        # for i in range(1,len(cum_ret)):
-        #     cum_ret.iloc[i] = cum_ret.iloc[i-1] * ( 1 + ret_pond.iloc[i])
-        # cum_ret = cum_ret -1
+        ret_pond = ret * nav_netto[isin][nav_netto.index >= date_picker]
+        ret_pond = ret_pond.sum(axis=1)
+        alfa_pond = alfa * nav_netto[isin][nav_netto.index >= date_picker]
+        alfa_pond = alfa_pond.sum(axis=1)
 
+        cum_ret = pd.Series(index = ret_pond.index)
+        cum_ret.iloc[0] = 1
+        for i in range(1,len(cum_ret)):
+            cum_ret.iloc[i] = cum_ret.iloc[i-1] * ( 1 + ret_pond.iloc[i])
+        cum_ret = cum_ret -1
 
-        # cum_alfa = pd.Series(index = alfa_pond.index)
-        # cum_alfa.iloc[0] = 1
-        # for i in range(1,len(cum_ret)):
-        #     cum_alfa.iloc[i] = cum_alfa.iloc[i-1] * ( 1 + alfa_pond.iloc[i])
-        # cum_alfa = cum_alfa -1
 
+        cum_alfa = pd.Series(index = alfa_pond.index)
+        cum_alfa.iloc[0] = 1
+        for i in range(1,len(cum_ret)):
+            cum_alfa.iloc[i] = cum_alfa.iloc[i-1] * ( 1 + alfa_pond.iloc[i])
+        cum_alfa = cum_alfa -1
 
-        # er_lordo_fi = cum_ret - cum_alfa
-        # pesi_er_lordo_fi = nav_lordo.iloc[-1]
-        # #%% LORDO MULTI ASSET
-        # codifiche = codifiche_all[(codifiche_all['BMK'] == 'SI') & (codifiche_all['Asset class'] == 'MultiAsset')]
 
-
-        # decodifica_bmk = codifiche[['serve per BMK']]
-        # map_dict = decodifica_bmk.to_dict().get('serve per BMK')
-
-        # isin = codifiche[(codifiche['BMK'] == 'SI')].index
-        # ret = ret_quota_lorda[isin][ret_quota_lorda.index >= '06/30/2022']
-
-        # nav_lordo = nav_lordo_all[isin].copy()
-        # for t in nav_lordo.index:
-        #     nav_lordo.loc[t] = nav_lordo.loc[t]/sum(nav_lordo.loc[t])
-
-        # alfa = ret.copy()
-        # for i in ret.columns:
-        #     alfa[i] = ret_bmk[map_dict[i]]
-
-        # ret_pond = ret * nav_lordo[isin][nav_lordo.index >= '06/30/2022']
-        # ret_pond = ret_pond.sum(axis=1)
-        # alfa_pond = alfa * nav_lordo[isin][nav_lordo.index >= '06/30/2022']
-        # alfa_pond = alfa_pond.sum(axis=1)
-
-        # cum_ret = pd.Series(index = ret_pond.index)
-        # cum_ret.iloc[0] = 1
-        # for i in range(1,len(cum_ret)):
-        #     cum_ret.iloc[i] = cum_ret.iloc[i-1] * ( 1 + ret_pond.iloc[i])
-        # cum_ret = cum_ret -1
-
-
-        # cum_alfa = pd.Series(index = alfa_pond.index)
-        # cum_alfa.iloc[0] = 1
-        # for i in range(1,len(cum_ret)):
-        #     cum_alfa.iloc[i] = cum_alfa.iloc[i-1] * ( 1 + alfa_pond.iloc[i])
-        # cum_alfa = cum_alfa -1
-
-
-        # er_lordo_ma = cum_ret - cum_alfa
-        # pesi_er_lordo_ma = nav_lordo.iloc[-1]
-        # #%% LORDO EQUITY
-        # codifiche = codifiche_all[(codifiche_all['BMK'] == 'SI') & (codifiche_all['Asset class'] == 'Equity')]
-
-
-        # decodifica_bmk = codifiche[['serve per BMK']]
-        # map_dict = decodifica_bmk.to_dict().get('serve per BMK')
-
-        # isin = codifiche[(codifiche['BMK'] == 'SI')].index
-        # ret = ret_quota_lorda[isin][ret_quota_lorda.index >= '06/30/2022']
-
-        # nav_lordo = nav_lordo_all[isin].copy()
-        # for t in nav_lordo.index:
-        #     nav_lordo.loc[t] = nav_lordo.loc[t]/sum(nav_lordo.loc[t])
-
-        # alfa = ret.copy()
-        # for i in ret.columns:
-        #     alfa[i] = ret_bmk[map_dict[i]]
-
-        # ret_pond = ret * nav_lordo[isin][nav_lordo.index >= '06/30/2022']
-        # ret_pond = ret_pond.sum(axis=1)
-        # alfa_pond = alfa * nav_lordo[isin][nav_lordo.index >= '06/30/2022']
-        # alfa_pond = alfa_pond.sum(axis=1)
-
-        # cum_ret = pd.Series(index = ret_pond.index)
-        # cum_ret.iloc[0] = 1
-        # for i in range(1,len(cum_ret)):
-        #     cum_ret.iloc[i] = cum_ret.iloc[i-1] * ( 1 + ret_pond.iloc[i])
-        # cum_ret = cum_ret -1
-
-
-        # cum_alfa = pd.Series(index = alfa_pond.index)
-        # cum_alfa.iloc[0] = 1
-        # for i in range(1,len(cum_ret)):
-        #     cum_alfa.iloc[i] = cum_alfa.iloc[i-1] * ( 1 + alfa_pond.iloc[i])
-        # cum_alfa = cum_alfa -1
-
-
-        # er_lordo_eq = cum_ret - cum_alfa
-        # pesi_er_lordo_eq = nav_lordo.iloc[-1]
-        # # %% ALL NETTO
-        # codifiche = codifiche_all[(codifiche_all['CAT'] == 'SI')]
-
-
-        # decodifica_bmk = codifiche[['serve per CAT M*']]
-        # map_dict = decodifica_bmk.to_dict().get('serve per CAT M*')
-
-        # isin = codifiche[(codifiche['CAT'] == 'SI')].index
-        # ret = ret_quota_netta[isin][ret_quota_netta.index >= '06/30/2022']
-
-        # nav_netto = nav_netto_all[isin].copy()
-        # for t in nav_netto.index:
-        #     nav_netto.loc[t] = nav_netto.loc[t]/sum(nav_netto.loc[t])
-
-        # alfa = ret.copy()
-        # for i in ret.columns:
-        #     alfa[i] = ret_categoria[map_dict[i]]
-
-        # ret_pond = ret * nav_netto[isin][nav_netto.index >= '06/30/2022']
-        # ret_pond = ret_pond.sum(axis=1)
-        # alfa_pond = alfa * nav_netto[isin][nav_netto.index >= '06/30/2022']
-        # alfa_pond = alfa_pond.sum(axis=1)
-
-        # cum_ret = pd.Series(index = ret_pond.index)
-        # cum_ret.iloc[0] = 1
-        # for i in range(1,len(cum_ret)):
-        #     cum_ret.iloc[i] = cum_ret.iloc[i-1] * ( 1 + ret_pond.iloc[i])
-        # cum_ret = cum_ret -1
-
-
-        # cum_alfa = pd.Series(index = alfa_pond.index)
-        # cum_alfa.iloc[0] = 1
-        # for i in range(1,len(cum_ret)):
-        #     cum_alfa.iloc[i] = cum_alfa.iloc[i-1] * ( 1 + alfa_pond.iloc[i])
-        # cum_alfa = cum_alfa -1
-
-
-        # er_netto = cum_ret - cum_alfa
-        # pesi_er_netto = nav_netto.iloc[-1]
-        # # %% NETTO FIXED INCOME
-        # codifiche = codifiche_all[(codifiche_all['CAT'] == 'SI') & (codifiche_all['Asset class'] == 'FixedIncome')]
-         
-
-        # decodifica_bmk = codifiche[['serve per CAT M*']]
-        # map_dict = decodifica_bmk.to_dict().get('serve per CAT M*')
-
-        # isin = codifiche[(codifiche['CAT'] == 'SI')].index
-        # ret = ret_quota_netta[isin][ret_quota_netta.index >= '06/30/2022']
-
-        # nav_netto = nav_netto_all[isin].copy()
-        # for t in nav_netto.index:
-        #     nav_netto.loc[t] = nav_netto.loc[t]/sum(nav_netto.loc[t])
-
-        # alfa = ret.copy()
-        # for i in ret.columns:
-        #     alfa[i] = ret_categoria[map_dict[i]]
-
-        # ret_pond = ret * nav_netto[isin][nav_netto.index >= '06/30/2022']
-        # ret_pond = ret_pond.sum(axis=1)
-        # alfa_pond = alfa * nav_netto[isin][nav_netto.index >= '06/30/2022']
-        # alfa_pond = alfa_pond.sum(axis=1)
-
-        # cum_ret = pd.Series(index = ret_pond.index)
-        # cum_ret.iloc[0] = 1
-        # for i in range(1,len(cum_ret)):
-        #     cum_ret.iloc[i] = cum_ret.iloc[i-1] * ( 1 + ret_pond.iloc[i])
-        # cum_ret = cum_ret -1
-
-
-        # cum_alfa = pd.Series(index = alfa_pond.index)
-        # cum_alfa.iloc[0] = 1
-        # for i in range(1,len(cum_ret)):
-        #     cum_alfa.iloc[i] = cum_alfa.iloc[i-1] * ( 1 + alfa_pond.iloc[i])
-        # cum_alfa = cum_alfa -1
-
-
-        # er_netto_fi = cum_ret - cum_alfa
-        # pesi_er_netto_fi = nav_netto.iloc[-1]
-        # # %% NETTO MULTIASSET
-        # codifiche = codifiche_all[(codifiche_all['CAT'] == 'SI') & (codifiche_all['Asset class'] == 'MultiAsset')]
-
-
-        # decodifica_bmk = codifiche[['serve per CAT M*']]
-        # map_dict = decodifica_bmk.to_dict().get('serve per CAT M*')
-
-        # isin = codifiche[(codifiche['CAT'] == 'SI')].index
-        # ret = ret_quota_netta[isin][ret_quota_netta.index >= '06/30/2022']
-
-        # nav_netto = nav_netto_all[isin].copy()
-        # for t in nav_netto.index:
-        #     nav_netto.loc[t] = nav_netto.loc[t]/sum(nav_netto.loc[t])
-
-        # alfa = ret.copy()
-        # for i in ret.columns:
-        #     alfa[i] = ret_categoria[map_dict[i]]
-
-        # ret_pond = ret * nav_netto[isin][nav_netto.index >= '06/30/2022']
-        # ret_pond = ret_pond.sum(axis=1)
-        # alfa_pond = alfa * nav_netto[isin][nav_netto.index >= '06/30/2022']
-        # alfa_pond = alfa_pond.sum(axis=1)
-
-        # cum_ret = pd.Series(index = ret_pond.index)
-        # cum_ret.iloc[0] = 1
-        # for i in range(1,len(cum_ret)):
-        #     cum_ret.iloc[i] = cum_ret.iloc[i-1] * ( 1 + ret_pond.iloc[i])
-        # cum_ret = cum_ret -1
-
-
-        # cum_alfa = pd.Series(index = alfa_pond.index)
-        # cum_alfa.iloc[0] = 1
-        # for i in range(1,len(cum_ret)):
-        #     cum_alfa.iloc[i] = cum_alfa.iloc[i-1] * ( 1 + alfa_pond.iloc[i])
-        # cum_alfa = cum_alfa -1
-
-
-        # er_netto_ma = cum_ret - cum_alfa
-        # pesi_er_netto_ma = nav_netto.iloc[-1]
-        # # %% NETTO Equity
-        # codifiche = codifiche_all[(codifiche_all['CAT'] == 'SI') & (codifiche_all['Asset class'] == 'Equity')]
-
-
-        # decodifica_bmk = codifiche[['serve per CAT M*']]
-        # map_dict = decodifica_bmk.to_dict().get('serve per CAT M*')
-
-        # isin = codifiche[(codifiche['CAT'] == 'SI')].index
-        # ret = ret_quota_netta[isin][ret_quota_netta.index >= '06/30/2022']
-
-        # nav_netto = nav_netto_all[isin].copy()
-        # for t in nav_netto.index:
-        #     nav_netto.loc[t] = nav_netto.loc[t]/sum(nav_netto.loc[t])
-
-        # alfa = ret.copy()
-        # for i in ret.columns:
-        #     alfa[i] = ret_categoria[map_dict[i]]
-
-        # ret_pond = ret * nav_netto[isin][nav_netto.index >= '06/30/2022']
-        # ret_pond = ret_pond.sum(axis=1)
-        # alfa_pond = alfa * nav_netto[isin][nav_netto.index >= '06/30/2022']
-        # alfa_pond = alfa_pond.sum(axis=1)
-
-        # cum_ret = pd.Series(index = ret_pond.index)
-        # cum_ret.iloc[0] = 1
-        # for i in range(1,len(cum_ret)):
-        #     cum_ret.iloc[i] = cum_ret.iloc[i-1] * ( 1 + ret_pond.iloc[i])
-        # cum_ret = cum_ret -1
-
-
-        # cum_alfa = pd.Series(index = alfa_pond.index)
-        # cum_alfa.iloc[0] = 1
-        # for i in range(1,len(cum_ret)):
-        #     cum_alfa.iloc[i] = cum_alfa.iloc[i-1] * ( 1 + alfa_pond.iloc[i])
-        # cum_alfa = cum_alfa -1
-
-
-        # er_netto_eq = cum_ret - cum_alfa
-        # pesi_er_netto_eq = nav_netto.iloc[-1]
+        er_netto = cum_ret - cum_alfa
+        pesi_er_netto = nav_netto.iloc[-1]
+#%%
 
 
 
