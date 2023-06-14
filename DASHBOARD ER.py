@@ -381,7 +381,7 @@ app.layout = html.Div([
                 dcc.RadioItems(
                     id='societa',
                     options=[{'label': i, 'value': i} for i in ['ALL', 'MIF+GAMAX', 'MGF']],
-                    value=36
+                    
                 )
             ]            
         ),
@@ -392,7 +392,7 @@ app.layout = html.Div([
                 dcc.RadioItems(
                     id='asset_class',
                     options=[{'label': i, 'value': i} for i in ['ALL', 'Equity', 'Fixed Income','Multi Asset']],
-                    value=36
+                    
                 )
             ]            
         ),
@@ -403,7 +403,7 @@ app.layout = html.Div([
                 dcc.RadioItems(
                     id='ranking',
                     options=[{'label': i, 'value': i} for i in ['SI', 'NO']],
-                    value=36
+                    
                 )
             ]            
         ),
@@ -414,7 +414,7 @@ app.layout = html.Div([
                 dcc.RadioItems(
                     id='media',
                     options=[{'label': i, 'value': i} for i in ['Semplice', 'Ponderata per NAV']],
-                    value=36
+                    
                 )
             ]            
         ),
@@ -424,9 +424,9 @@ app.layout = html.Div([
     
     
     #GRAFICI GROSSI
-    html.Div(children=[
-    dcc.Graph(id='grafico_er', style={'height': '100%', 'width': '100%', 'display': 'block'}, config={'displayModeBar': False})
-    ], style={'height': '1000px','justify-content': 'center'}),           
+    html.Div([
+        dcc.Graph(id='grafico_er'),  # questo è il componente in cui il grafico verrà visualizzato
+    ]),          
     
     
     #TABELLA RISULTATI
@@ -483,8 +483,7 @@ def update_output(date):
     
 
 @app.callback(
-    [Output('grafico_er', 'figure'),
-],
+    Output('grafico_er', 'figure'),
     [Input('date_picker', 'date'),
       Input('societa', 'value'),
       Input('asset_class', 'value'),
@@ -495,8 +494,15 @@ def update_output(date):
 
 def motore(date_picker, societa, asset_class, ranking, media):
     
-    if date_picker is not None and societa is not None and asset_class is not None and ranking is not None and media is not None :
-
+    if date_picker is not None and societa is not None and asset_class is not None and ranking is not None and media is not None:
+        
+        print(date_picker)
+        print(societa)
+        print(asset_class)
+        print(ranking)
+        print(media)
+        
+        
         # %% CALCOLO PERFORMANCE
         ret_quota_netta = quota_netta.pct_change()[1:]
         ret_quota_lorda = quota_lorda.pct_change()[1:]
@@ -540,9 +546,29 @@ def motore(date_picker, societa, asset_class, ranking, media):
         cum_categoria = cum_categoria -1
 
 
-
+        #%% DECODIFICO I FILTRI DEI CAMPI per filtri
+        
+        # SOCIETA: ['ALL', 'MIF+GAMAX', 'MGF']
+        if societa == 'ALL' :
+            soc = ['MIF','GAMAX','MGF']
+        elif societa == 'MIF+GAMAX' :
+            soc = ['MIF','GAMAX']
+        elif societa == 'MGF' :
+            soc = ['MGF']
+        
+        # SOCIETA: ['ALL', 'MIF+GAMAX', 'MGF']
+        if asset_class == 'ALL' :
+            ac = ['Equity','FixedIncome','MultiAsset']
+        elif asset_class == 'Equity' :
+            ac = ['Equity']
+        elif asset_class == 'Fixed Income' :
+            ac = ['FixedIncome']
+        elif asset_class == 'Multi Asset':
+            ac = ['MultiAsset']
+        
+       
         #%% all LORDO
-        codifiche = codifiche_all[(codifiche_all['BMK'] == 'SI')]
+        codifiche = codifiche_all[(codifiche_all['BMK'] == 'SI') & (codifiche_all['SGR'].isin(soc)) & (codifiche_all['Asset class'].isin(ac)) & (codifiche_all['posizionamento'] == ranking)]
 
 
         decodifica_bmk = codifiche[['serve per BMK']]
@@ -558,11 +584,20 @@ def motore(date_picker, societa, asset_class, ranking, media):
         alfa = ret.copy()
         for i in ret.columns:
             alfa[i] = ret_bmk[map_dict[i]]
-
-        ret_pond = ret * nav_lordo[isin][nav_lordo.index >= date_picker]
-        ret_pond = ret_pond.sum(axis=1)
-        alfa_pond = alfa * nav_lordo[isin][nav_lordo.index >= date_picker]
-        alfa_pond = alfa_pond.sum(axis=1)
+            
+        ret_pond = None
+        
+        if media == 'Semplice':
+            ret_pond = ret * 1/len(ret)
+            ret_pond = ret_pond.sum(axis=1)
+            alfa_pond = alfa * 1/len(alfa)
+            alfa_pond = alfa_pond.sum(axis=1)
+            
+        if media == 'Ponderata per NAV':
+            ret_pond = ret * nav_lordo[isin][nav_lordo.index >= date_picker]
+            ret_pond = ret_pond.sum(axis=1)
+            alfa_pond = alfa * nav_lordo[isin][nav_lordo.index >= date_picker]
+            alfa_pond = alfa_pond.sum(axis=1)
 
         cum_ret = pd.Series(index = ret_pond.index)
         cum_ret.iloc[0] = 1
@@ -582,7 +617,7 @@ def motore(date_picker, societa, asset_class, ranking, media):
         pesi_er_lordo = nav_lordo.iloc[-1]
 
         # %% ALL NETTO
-        codifiche = codifiche_all[(codifiche_all['CAT'] == 'SI')]
+        codifiche = codifiche_all[(codifiche_all['CAT'] == 'SI') & (codifiche_all['SGR'].isin(soc)) & (codifiche_all['Asset class'].isin(ac)) & (codifiche_all['posizionamento'] == ranking)]
 
 
         decodifica_bmk = codifiche[['serve per CAT M*']]
@@ -598,11 +633,19 @@ def motore(date_picker, societa, asset_class, ranking, media):
         alfa = ret.copy()
         for i in ret.columns:
             alfa[i] = ret_categoria[map_dict[i]]
-
-        ret_pond = ret * nav_netto[isin][nav_netto.index >= date_picker]
-        ret_pond = ret_pond.sum(axis=1)
-        alfa_pond = alfa * nav_netto[isin][nav_netto.index >= date_picker]
-        alfa_pond = alfa_pond.sum(axis=1)
+        
+        ret_pond = None
+        if media == 'Semplice':
+            ret_pond = ret * 1/len(ret)
+            ret_pond = ret_pond.sum(axis=1)
+            alfa_pond = alfa * 1/len(alfa)
+            alfa_pond = alfa_pond.sum(axis=1)
+            
+        if media == 'Ponderata per NAV':
+            ret_pond = ret * nav_netto[isin][nav_netto.index >= date_picker]
+            ret_pond = ret_pond.sum(axis=1)
+            alfa_pond = alfa * nav_netto[isin][nav_netto.index >= date_picker]
+            alfa_pond = alfa_pond.sum(axis=1)
 
         cum_ret = pd.Series(index = ret_pond.index)
         cum_ret.iloc[0] = 1
@@ -621,9 +664,21 @@ def motore(date_picker, societa, asset_class, ranking, media):
         er_netto = cum_ret - cum_alfa
         pesi_er_netto = nav_netto.iloc[-1]
 #%%
-
-
-
+        #GRAFICO IIS
+        
+        er_graph = {'data': [{'x':er_netto.index  , 'y':np.array(er_netto) , 'type': 'scatter', 'mode': 'lines+markers', 'name': 'Test'}]}
+        
+        # er_graph = go.Figure()
+        # er_graph.add_trace(go.Scatter(x=list(er_netto.index), y=list(er_netto), mode='lines', name='CTV Totale', line=dict(color='olivedrab')))
+        # er_graph.add_trace(go.Scatter(er_lordo, mode='lines', name='PIC', line=dict(color='purple')))
+        
+        # er_graph.update_layout(legend=dict(orientation="h", yanchor="top", y=1.07, xanchor="center", x=0.15, font=dict(size=15)), title={'text':f'Simulazione IIS vs PIC dal ', 'font':{'size': 24}, 'x': 0.5,'y': 0.95, 'xanchor': 'center','yanchor': 'top'},
+        #                         plot_bgcolor='white',xaxis=dict(showgrid=False),yaxis=dict(showgrid=True, gridcolor='lightgrey', gridwidth=1, tickwidth=2)
+        #                         ) 
+        return [er_graph]
+    else:
+        return {}
+        
 
 
 if __name__ == '__main__':
