@@ -666,16 +666,19 @@ def motore(date_picker, societa, asset_class, ranking, media):
 #%%
         #GRAFICO IIS
         
-        er_graph = {'data': [{'x':er_netto.index  , 'y':np.array(er_netto) , 'type': 'scatter', 'mode': 'lines+markers', 'name': 'Test'}]}
+        #er_graph = {'data': [{'x':er_netto.index  , 'y':np.array(er_netto) , 'type': 'scatter', 'mode': 'lines+markers', 'name': 'Test'}]}
         
-        # er_graph = go.Figure()
-        # er_graph.add_trace(go.Scatter(x=list(er_netto.index), y=list(er_netto), mode='lines', name='CTV Totale', line=dict(color='olivedrab')))
-        # er_graph.add_trace(go.Scatter(er_lordo, mode='lines', name='PIC', line=dict(color='purple')))
+        er_graph = go.Figure()
+        er_graph.add_trace(go.Scatter(x=er_netto.index, y=er_netto, mode='lines', name='ER Netto', line=dict(color='lightsteelblue')))
+        er_graph.add_trace(go.Scatter(x=er_lordo.index,y=er_lordo, mode='lines', name='ER Lordo', line=dict(color='midnightblue')))
         
-        # er_graph.update_layout(legend=dict(orientation="h", yanchor="top", y=1.07, xanchor="center", x=0.15, font=dict(size=15)), title={'text':f'Simulazione IIS vs PIC dal ', 'font':{'size': 24}, 'x': 0.5,'y': 0.95, 'xanchor': 'center','yanchor': 'top'},
-        #                         plot_bgcolor='white',xaxis=dict(showgrid=False),yaxis=dict(showgrid=True, gridcolor='lightgrey', gridwidth=1, tickwidth=2)
-        #                         ) 
-        return [er_graph]
+        er_graph.update_layout(legend=dict(orientation="h", yanchor="top", y=1.07, xanchor="center", x=0.15, font=dict(size=15)), title={'text':f'Dettaglio ER dati al '+str(er_netto.index[1]), 'font':{'size': 24}, 'x': 0.5,'y': 0.95, 'xanchor': 'center','yanchor': 'top'},
+                                plot_bgcolor='white',xaxis=dict(showgrid=False),yaxis=dict(showgrid=True, gridcolor='lightgrey', gridwidth=1, tickwidth=2)
+                                )
+        
+        
+        
+        return er_graph
     else:
         return {}
         
