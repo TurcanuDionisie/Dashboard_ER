@@ -359,14 +359,14 @@ app.layout = html.Div([
         html.H1('DashBoard ER'),
         html.H2('by Monitoraggio & Analisi Prodotti di Investimento', style={'color': 'black', 'font-style': 'italic', 'font-weight': 'normal','font-size': '1.85vh', 'margin-left': '0px','margin-bottom':'20px'})
 
-    ],style={'margin': 'auto', 'justify-content': 'center','display': 'flex', 'align-items': 'flex-end'}),
+    ],style={'margin-left': '20px', 'justify-content': 'center','display': 'flex', 'align-items': 'flex-end'}),
     
     # TABELLA INPUT
     html.Div([
         
         #FILTRO DATA
         html.Div(
-            [
+            [   
                 dcc.DatePickerSingle(
                     id='date_picker',
                     date=None
@@ -375,49 +375,54 @@ app.layout = html.Div([
             ]
         ),
         
-        # FILTRO SOCIETà
-        html.Div(
-            [
-                dcc.RadioItems(
-                    id='societa',
-                    options=[{'label': i, 'value': i} for i in ['ALL', 'MIF+GAMAX', 'MGF']],
-                    
-                )
-            ]            
-        ),
+
         
+        #FILTRO SOCIETA
+        html.Div(
+        style={'text-align': 'center', 'margin-left': '30px'},  # Added style to center align the content
+        children=[
+            html.H2('SOCIETA', style={'color': 'black', 'font-style': 'italic', 'font-weight': 'normal', 'font-size': '1.85vh', 'margin-left': '0px', 'margin-bottom': '20px'}),
+            dcc.RadioItems(
+                id='societa',
+                options=[{'label': i, 'value': i} for i in ['ALL', 'MIF+GAMAX', 'MGF']],
+            )
+        ]
+    ),
+
         #FILTRO ASSET CLASS
         html.Div(
-            [
-                dcc.RadioItems(
-                    id='asset_class',
-                    options=[{'label': i, 'value': i} for i in ['ALL', 'Equity', 'Fixed Income','Multi Asset']],
-                    
-                )
-            ]            
-        ),
+        style={'text-align': 'center', 'margin-left': '30px'},  # Added style to center align the content
+        children=[
+            html.H2('ASSET CLASS', style={'color': 'black', 'font-style': 'italic', 'font-weight': 'normal', 'font-size': '1.85vh', 'margin-left': '0px', 'margin-bottom': '20px'}),
+            dcc.RadioItems(
+                id='asset_class',
+                options=[{'label': i, 'value': i} for i in ['ALL', 'Equity', 'Fixed Income','Multi Asset']],
+            )
+        ]
+    ),
 
         #FILTRO RANKING SI/NO
         html.Div(
-            [
-                dcc.RadioItems(
-                    id='ranking',
-                    options=[{'label': i, 'value': i} for i in ['SI', 'NO']],
-                    
-                )
-            ]            
-        ),
-
+        style={'text-align': 'center', 'margin-left': '30px'},  # Added style to center align the content
+        children=[
+            html.H2('RANKING', style={'color': 'black', 'font-style': 'italic', 'font-weight': 'normal', 'font-size': '1.85vh', 'margin-left': '0px', 'margin-bottom': '20px'}),
+            dcc.RadioItems(
+                id='ranking',
+                options=[{'label': i, 'value': i} for i in ['ALL','SI', 'NO']],
+            )
+        ]
+    ),
         #FILTRO MEDIA SI/NO
         html.Div(
-            [
-                dcc.RadioItems(
-                    id='media',
-                    options=[{'label': i, 'value': i} for i in ['Semplice', 'Ponderata per NAV']],
-                    
-                )
-            ]            
-        ),
+        style={'text-align': 'center', 'margin-left': '30px'},  # Added style to center align the content
+        children=[
+            html.H2('MEDIA', style={'color': 'black', 'font-style': 'italic', 'font-weight': 'normal', 'font-size': '1.85vh', 'margin-left': '0px', 'margin-bottom': '20px'}),
+            dcc.RadioItems(
+                id='media',
+                options=[{'label': i, 'value': i} for i in ['Semplice', 'Ponderata per NAV']],
+            )
+        ]
+    ),
         
 
     ], style={'display': 'flex', 'justify-content': 'center', 'margin-top': '10px'}),
@@ -429,42 +434,42 @@ app.layout = html.Div([
     ]),          
     
     
-    #TABELLA RISULTATI
-    html.Div([dash_table.DataTable(
-            id='stats',
-            columns=[
-                {"name": [" ", "Nome"], "id": "nome"},
-                {"name": ["Performance", "IIS"], "id": "perfiis"},
-                {"name": ["Performance", "PIC"], "id": "perfpic"},
-                {"name": ["Performance", "Effetto Strategia"], "id": "perfstra"},
-                {"name": ["Performance", "Prezzo Iniziale"], "id": "perfprin"},
-                {"name": ["Performance", "Prezzo Finale"], "id": "perfprfin"},   
-                {"name": ["Performance", "Prezzo Medio"], "id": "perfprmed"}, 
-                {"name": ["Performance", "Rimbalzo per parità IIS"], "id": "perfrimbiis"}, 
-                {"name": ["Performance", "Rimbalzo per parità PIC"], "id": "perfrimbpic"}, 
-                {"name": ["Volatilità", "IIS"], "id": "voliis"},
-                {"name": ["Volatilità", "PIC"], "id": "volpic"},
-                {"name": ["Volatilità", "Effetto Strategia"], "id": "volstra"},
-                {"name": ["Max Draw-Down", "IIS"], "id": "mddiis"},
-                {"name": ["Max Draw-Down", "PIC"], "id": "mddpic"},
-                {"name": ["Max Draw-Down", "Effetto Strategia"], "id": "mddstra"},
-            ],
-            data=None,
-            merge_duplicate_headers=True,
-            style_table={                
-                'margin': 'auto',  
-            },
-            style_header={
-                'backgroundColor': 'royalblue',
-                'color': 'white',
-                'fontWeight': 'bold',
-                'text-align': 'center'
-            },
-            style_cell={'textAlign': 'center', 'fontSize':'0.75vw'}
-        )
+#     #TABELLA RISULTATI
+#     html.Div([dash_table.DataTable(
+#             id='stats',
+#             columns=[
+#                 {"name": [" ", "Nome"], "id": "nome"},
+#                 {"name": ["Performance", "IIS"], "id": "perfiis"},
+#                 {"name": ["Performance", "PIC"], "id": "perfpic"},
+#                 {"name": ["Performance", "Effetto Strategia"], "id": "perfstra"},
+#                 {"name": ["Performance", "Prezzo Iniziale"], "id": "perfprin"},
+#                 {"name": ["Performance", "Prezzo Finale"], "id": "perfprfin"},   
+#                 {"name": ["Performance", "Prezzo Medio"], "id": "perfprmed"}, 
+#                 {"name": ["Performance", "Rimbalzo per parità IIS"], "id": "perfrimbiis"}, 
+#                 {"name": ["Performance", "Rimbalzo per parità PIC"], "id": "perfrimbpic"}, 
+#                 {"name": ["Volatilità", "IIS"], "id": "voliis"},
+#                 {"name": ["Volatilità", "PIC"], "id": "volpic"},
+#                 {"name": ["Volatilità", "Effetto Strategia"], "id": "volstra"},
+#                 {"name": ["Max Draw-Down", "IIS"], "id": "mddiis"},
+#                 {"name": ["Max Draw-Down", "PIC"], "id": "mddpic"},
+#                 {"name": ["Max Draw-Down", "Effetto Strategia"], "id": "mddstra"},
+#             ],
+#             data=None,
+#             merge_duplicate_headers=True,
+#             style_table={                
+#                 'margin': 'auto',  
+#             },
+#             style_header={
+#                 'backgroundColor': 'royalblue',
+#                 'color': 'white',
+#                 'fontWeight': 'bold',
+#                 'text-align': 'center'
+#             },
+#             style_cell={'textAlign': 'center', 'fontSize':'0.75vw'}
+#         )
                 
-    ],style={'justify-content': 'center','text-align': 'center', 'width':'100%','marginTop':'40px'}
-),
+#     ],style={'justify-content': 'center','text-align': 'center', 'width':'100%','marginTop':'40px'}
+# ),
 
 
 
@@ -566,9 +571,17 @@ def motore(date_picker, societa, asset_class, ranking, media):
         elif asset_class == 'Multi Asset':
             ac = ['MultiAsset']
         
+       # RANKING ['ALL','SI','NO']
+        if ranking == 'ALL' :
+            rk = ['SI','NO']
+        elif ranking == 'SI' :
+            rk = ['SI']
+        elif ranking == 'NO' :
+            rk = ['NO']
+
        
         #%% all LORDO
-        codifiche = codifiche_all[(codifiche_all['BMK'] == 'SI') & (codifiche_all['SGR'].isin(soc)) & (codifiche_all['Asset class'].isin(ac)) & (codifiche_all['posizionamento'] == ranking)]
+        codifiche = codifiche_all[(codifiche_all['BMK'] == 'SI') & (codifiche_all['SGR'].isin(soc)) & (codifiche_all['Asset class'].isin(ac)) & (codifiche_all['posizionamento'].isin(rk))]
 
 
         decodifica_bmk = codifiche[['serve per BMK']]
@@ -617,7 +630,7 @@ def motore(date_picker, societa, asset_class, ranking, media):
         pesi_er_lordo = nav_lordo.iloc[-1]
 
         # %% ALL NETTO
-        codifiche = codifiche_all[(codifiche_all['CAT'] == 'SI') & (codifiche_all['SGR'].isin(soc)) & (codifiche_all['Asset class'].isin(ac)) & (codifiche_all['posizionamento'] == ranking)]
+        codifiche = codifiche_all[(codifiche_all['CAT'] == 'SI') & (codifiche_all['SGR'].isin(soc)) & (codifiche_all['Asset class'].isin(ac)) & (codifiche_all['posizionamento'].isin(rk))]
 
 
         decodifica_bmk = codifiche[['serve per CAT M*']]
