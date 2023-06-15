@@ -430,8 +430,8 @@ app.layout = html.Div([
     
     #GRAFICI GROSSI
     html.Div([
-        dcc.Graph(id='grafico_er'),  # questo è il componente in cui il grafico verrà visualizzato
-    ]),          
+        dcc.Graph(id='grafico_er', style={'height': '100%', 'width': '100%'}) # questo è il componente in cui il grafico verrà visualizzato
+    ],style={'height': '700px','justify-content': 'center'}),          
     
     
     html.Div([
