@@ -656,6 +656,89 @@ cum_alfa = cum_alfa -1
 
 er_netto_eq = cum_ret - cum_alfa
 pesi_er_netto_eq = nav_netto.iloc[-1]
+
+
+
+
+
+# %% DETTAGLIO FONDI
+
+
+nome_fondi = codifiche_all[(codifiche_all['CAT'] == 'SI') | (codifiche_all['BMK'] == 'SI')] 
+
+
+ret_quota_netta = quota_netta.pct_change()[1:]
+ret_quota_lorda = quota_lorda.pct_change()[1:]
+ret_bmk = bmk.pct_change()[1:]
+ret_categoria = cat_morningstar.pct_change()[1:]
+
+
+date_picker = "01/01/2023"
+dettaglio_fondo = 'IE00B9CQ9016'
+
+
+#filtro per data inizio
+ret_quota_netta = ret_quota_netta[ret_quota_netta.index >= date_picker]
+ret_quota_lorda = ret_quota_lorda[ret_quota_lorda.index >= date_picker]
+ret_bmk = ret_bmk[ret_bmk.index >= date_picker]
+ret_categoria = ret_categoria[ret_categoria.index >= date_picker]
+
+
+#NETTA
+cum_quota_netta = pd.DataFrame(columns=ret_quota_netta.columns, index = ret_quota_netta.index)
+cum_quota_netta.iloc[0] = 1
+for i in range(1,len(cum_quota_netta)):
+    cum_quota_netta.iloc[i] = cum_quota_netta.iloc[i-1] * ( 1 + ret_quota_netta.iloc[i])
+cum_quota_netta = cum_quota_netta -1
+    
+#LORDA    
+cum_quota_lorda = pd.DataFrame(columns=ret_quota_lorda.columns, index = ret_quota_lorda.index)
+cum_quota_lorda.iloc[0] = 1
+for i in range(1,len(cum_quota_lorda)):
+    cum_quota_lorda.iloc[i] = cum_quota_lorda.iloc[i-1] * ( 1 + ret_quota_lorda.iloc[i])
+cum_quota_lorda = cum_quota_lorda -1
+
+#BMK
+cum_bmk = pd.DataFrame(columns=ret_bmk.columns, index = ret_bmk.index)
+cum_bmk.iloc[0] = 1
+for i in range(1,len(cum_bmk)):
+    cum_bmk.iloc[i] = cum_bmk.iloc[i-1] * ( 1 + ret_bmk.iloc[i])
+cum_bmk = cum_bmk -1
+
+#CATEGORIA
+cum_categoria = pd.DataFrame(columns=ret_categoria.columns, index = ret_categoria.index)
+cum_categoria.iloc[0] = 1
+for i in range(1,len(cum_categoria)):
+    cum_categoria.iloc[i] = cum_categoria.iloc[i-1] * ( 1 + ret_categoria.iloc[i])
+cum_categoria = cum_categoria -1
+
+
+
+nome_fondi_lordo = nome_fondi[nome_fondi['BMK'] == 'SI']
+
+nome_fondi_netto = nome_fondi[nome_fondi['CAT'] == 'SI']
+
+
+
+if(dettaglio_fondo in (nome_fondi_lordo.index)):
+    cum_quota_lorda = cum_quota_lorda[dettaglio_fondo]
+    cum_bmk = cum_bmk[nome_fondi_lordo['serve per BMK'].loc[dettaglio_fondo]]
+    er_lordo = cum_quota_lorda - cum_bmk
+else:
+    er_lordo = cum_quota_
+
+
+if(dettaglio_fondo in (nome_fondi_netto.index)):
+    cum_quota_netta = cum_quota_netta[dettaglio_fondo]
+    cum_categoria = cum_categoria[nome_fondi_netto['serve per CAT M*'].loc[dettaglio_fondo]]
+    er_netto = cum_quota_netta - cum_categoria
+
+
+
+
+
+
+
 # %% EXCEL
 
 dataframes = [er_lordo,er_netto, er_lordo_fi,er_lordo_ma, er_lordo_eq, er_netto_fi,er_netto_ma,er_netto_eq]

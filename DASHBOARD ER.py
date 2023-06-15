@@ -825,11 +825,15 @@ def motoreDettaglio(dettaglio_fondo, date_picker):
         cum_categoria = cum_categoria -1
         
         
+        nome_fondi_lordo = nome_fondi[nome_fondi['BMK'] == 'SI']
+    
+        nome_fondi_netto = nome_fondi[nome_fondi['CAT'] == 'SI']
+        
         
         cum_quota_netta = cum_quota_netta[dettaglio_fondo]
         cum_quota_lorda = cum_quota_lorda[dettaglio_fondo]
-        cum_bmk = cum_bmk[nome_fondi['serve per BMK'].loc[dettaglio_fondo]]
-        cum_categoria = cum_categoria[nome_fondi['serve per CAT M*'].loc[dettaglio_fondo]]
+        cum_bmk = cum_bmk[nome_fondi_lordo['serve per BMK'].loc[dettaglio_fondo]]
+        cum_categoria = cum_categoria[nome_fondi_netto['serve per CAT M*'].loc[dettaglio_fondo]]
         
         er_netto = cum_quota_netta - cum_categoria
         er_lordo = cum_quota_lorda - cum_bmk
@@ -841,6 +845,11 @@ def motoreDettaglio(dettaglio_fondo, date_picker):
         fondo_graph = go.Figure()
         fondo_graph.add_trace(go.Scatter(x=er_netto.index, y=er_netto, mode='lines', name='ER Netto', line=dict(color='lightsteelblue')))
         fondo_graph.add_trace(go.Scatter(x=er_lordo.index,y=er_lordo, mode='lines', name='ER Lordo', line=dict(color='midnightblue')))
+        
+        
+        fondo_graph.update_layout(legend=dict(orientation="h", yanchor="top", y=1.07, xanchor="center", x=0.15, font=dict(size=15)), title={'text':f'Dettaglio ER dati al '+str(er_netto.index[1]), 'font':{'size': 24}, 'x': 0.5,'y': 0.95, 'xanchor': 'center','yanchor': 'top'},
+                                plot_bgcolor='white',xaxis=dict(showgrid=False),yaxis=dict(showgrid=True, gridcolor='lightgrey', gridwidth=1, tickwidth=2)
+                                )
         
         
         return fondo_graph
