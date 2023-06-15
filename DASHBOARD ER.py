@@ -23,10 +23,6 @@ import requests
 directory = r'G:\Analisi e Performance Prodotti\Prodotti\Analisi Offerta di Prodotto\Presidenza Funds Performance & Positioning\2023\2023.06\python'
 os.chdir(directory)
 
-#%% INPUT
-
-data_confronto = ['1M','3M','YTD','1Y','30/06/2022','3Y','5Y']
-
 
 #%% CARICAMENTO DATI SOTTOSTANTI E NON VARIABILI
 
@@ -320,7 +316,7 @@ nav_netto_all = nav_netto.copy()
 
 
 #%% ELEMENTI PER LA DASHBOARD
-nome_fondi = codifiche_all[(codifiche_all['CAT'] == 'SI') | (codifiche_all['BMK'] == 'SI')] 
+nome_fondi = codifiche_all[(codifiche_all['CAT'] == 'SI') | (codifiche_all['BMK'] == 'SI') & (codifiche_all['posizionamento'] == 'SI')] 
 
 
 #%% DASHBOARD: LAYOUT
@@ -439,7 +435,7 @@ app.layout = html.Div([
     
     
     html.Div([
-        html.H2('Dettagio fondo', style={'color': 'black', 'font-style': 'italic', 'font-weight': 'normal','font-size': '1.85vh', 'margin-left': '0px','margin-bottom':'20px'})
+        html.H2('Dettaglio fondo', style={'color': 'black', 'font-style': 'italic', 'font-weight': 'normal','font-size': '1.85vh', 'margin-left': '0px','margin-bottom':'20px'})
 
     ],style={'margin-left': '20px', 'justify-content': 'center','display': 'flex', 'align-items': 'flex-end'}),
     
@@ -456,23 +452,18 @@ app.layout = html.Div([
             
             
             dash_table.DataTable(
-                    id='stats',
+                    id='tabella',
                     columns=[
-                        {"name": [" ", "Nome"], "id": "nome"},
-                        {"name": ["Performance", "IIS"], "id": "perfiis"},
-                        {"name": ["Performance", "PIC"], "id": "perfpic"},
-                        {"name": ["Performance", "Effetto Strategia"], "id": "perfstra"},
-                        {"name": ["Performance", "Prezzo Iniziale"], "id": "perfprin"},
-                        {"name": ["Performance", "Prezzo Finale"], "id": "perfprfin"},   
-                        {"name": ["Performance", "Prezzo Medio"], "id": "perfprmed"}, 
-                        {"name": ["Performance", "Rimbalzo per parità IIS"], "id": "perfrimbiis"}, 
-                        {"name": ["Performance", "Rimbalzo per parità PIC"], "id": "perfrimbpic"}, 
-                        {"name": ["Volatilità", "IIS"], "id": "voliis"},
-                        {"name": ["Volatilità", "PIC"], "id": "volpic"},
-                        {"name": ["Volatilità", "Effetto Strategia"], "id": "volstra"},
-                        {"name": ["Max Draw-Down", "IIS"], "id": "mddiis"},
-                        {"name": ["Max Draw-Down", "PIC"], "id": "mddpic"},
-                        {"name": ["Max Draw-Down", "Effetto Strategia"], "id": "mddstra"},
+                        {"name": ["Category"], "id": "cat"},
+                        {"name": ["Type"], "id": "type"},
+                        {"name": ["1M"], "id": "m1"},
+                        {"name": ["3M"], "id": "m3"},
+                        {"name": ["YTD"], "id": "ytd"},
+                        {"name": ["1Y"], "id": "y1"},   
+                        {"name": ["2022"], "id": "_2022_"}, 
+                        {"name": ["2021"], "id": "_2021_"},
+                        {"name": ["2020"], "id": "_2020_"},
+
                     ],
                     data=None,
                     merge_duplicate_headers=True,
@@ -770,11 +761,10 @@ def motore(date_picker, societa, asset_class, ranking, media):
     
     
 @app.callback(
-    Output('grafico_dettaglio', 'figure'),
-    
+    [Output('grafico_dettaglio', 'figure'),
+    Output('tabella', 'data')],
     [Input('dettaglio_fondo', 'value'),
-     Input('date_picker', 'date')
-    ]
+     Input('date_picker', 'date')]
 )
 
 def motoreDettaglio(dettaglio_fondo, date_picker):
@@ -830,21 +820,29 @@ def motoreDettaglio(dettaglio_fondo, date_picker):
         nome_fondi_netto = nome_fondi[nome_fondi['CAT'] == 'SI']
         
         
-        cum_quota_netta = cum_quota_netta[dettaglio_fondo]
-        cum_quota_lorda = cum_quota_lorda[dettaglio_fondo]
-        cum_bmk = cum_bmk[nome_fondi_lordo['serve per BMK'].loc[dettaglio_fondo]]
-        cum_categoria = cum_categoria[nome_fondi_netto['serve per CAT M*'].loc[dettaglio_fondo]]
+        if(dettaglio_fondo in (nome_fondi_lordo.index)):
+            cum_quota_lorda = cum_quota_lorda[dettaglio_fondo]
+            cum_bmk = cum_bmk[nome_fondi_lordo['serve per BMK'].loc[dettaglio_fondo]]
+            er_lordo = cum_quota_lorda - cum_bmk
         
-        er_netto = cum_quota_netta - cum_categoria
-        er_lordo = cum_quota_lorda - cum_bmk
+        
+        
+        if(dettaglio_fondo in (nome_fondi_netto.index)):
+            cum_quota_netta = cum_quota_netta[dettaglio_fondo]
+            cum_categoria = cum_categoria[nome_fondi_netto['serve per CAT M*'].loc[dettaglio_fondo]]
+            er_netto = cum_quota_netta - cum_categoria
             
         
     
     
         # GRAFICO DETTAGLIO FONDO
         fondo_graph = go.Figure()
-        fondo_graph.add_trace(go.Scatter(x=er_netto.index, y=er_netto, mode='lines', name='ER Netto', line=dict(color='lightsteelblue')))
-        fondo_graph.add_trace(go.Scatter(x=er_lordo.index,y=er_lordo, mode='lines', name='ER Lordo', line=dict(color='midnightblue')))
+        
+        if(dettaglio_fondo in (nome_fondi_netto.index)):
+            fondo_graph.add_trace(go.Scatter(x=er_netto.index, y=er_netto, mode='lines', name='ER Netto', line=dict(color='lightsteelblue')))
+        
+        if(dettaglio_fondo in (nome_fondi_lordo.index)):
+            fondo_graph.add_trace(go.Scatter(x=er_lordo.index,y=er_lordo, mode='lines', name='ER Lordo', line=dict(color='midnightblue')))
         
         
         fondo_graph.update_layout(legend=dict(orientation="h", yanchor="top", y=1.07, xanchor="center", x=0.15, font=dict(size=15)), title={'text':f'Dettaglio ER dati al '+str(er_netto.index[1]), 'font':{'size': 24}, 'x': 0.5,'y': 0.95, 'xanchor': 'center','yanchor': 'top'},
@@ -852,7 +850,43 @@ def motoreDettaglio(dettaglio_fondo, date_picker):
                                 )
         
         
-        return fondo_graph
+        
+        podio = pd.read_excel('230510 - Analisi MAP - Elementi per il podio  v2 APRILE 23.xlsx', sheet_name ='x dashboard')
+        podio= podio.set_index('isin')
+
+        
+        tab = pd.DataFrame(index = ['rk_net','rk_gross','er_net','er_gross','perf'], columns=['Categoria','1M','3M','YTD','1Y','2022','2021','2020'])
+        
+        for t in ['1M','3M','YTD','1Y','2022','2021','2020']:
+            tab[t].loc['rk_net'] = np.array(round(podio['net_'+t].loc[dettaglio_fondo],2))
+            tab[t].loc['rk_gross'] = np.array(round(podio['gross_'+t].loc[dettaglio_fondo],2))
+            tab[t].loc['er_net'] = np.array(round(podio['ernetto_'+t].loc[dettaglio_fondo],2))
+            tab[t].loc['er_gross'] = np.array(round(podio['erlordo_'+t].loc[dettaglio_fondo],2))
+            tab[t].loc['perf'] = np.array(round(podio['perf_'+t].loc[dettaglio_fondo],2))
+        
+        tab['Categoria'].loc['rk_net'] = nome_fondi['Asset class'].loc[dettaglio_fondo]
+        
+        tab = tab.rename(index={'rk_net':'Net Rank',
+                                'rk_gross':'Gross Rank',
+                                'er_net':'ER Net',
+                                'er_gross':'ER Gross',
+                                'perf':'Perf. Absolute',
+                                })
+        
+        tabs = [{
+             "cat": tab["Categoria"].loc[i],
+             "type": i,
+             "m1": tab["1M"].loc[i],
+             "m3": tab["3M"].loc[i],
+             "ytd": tab["YTD"].loc[i],
+             "y1": tab["1Y"].loc[i],
+             "_2022_": tab["2022"].loc[i],
+             "_2021_": tab["2021"].loc[i],
+             "_2020_": tab["2020"].loc[i],
+             
+         }for i in tab.index] 
+        
+        return fondo_graph, tabs
     
     else:
         return {}
