@@ -319,6 +319,10 @@ for t in nav_netto.index:
 nav_netto_all = nav_netto.copy()
 
 
+#%% ELEMENTI PER LA DASHBOARD
+nome_fondi = codifiche_all[(codifiche_all['CAT'] == 'SI') | (codifiche_all['BMK'] == 'SI')] 
+
+
 #%% DASHBOARD: LAYOUT
 
 app = dash.Dash(__name__, 
@@ -434,7 +438,69 @@ app.layout = html.Div([
     ]),          
     
     
-#     #TABELLA RISULTATI
+    html.Div([
+        html.H2('Dettagio fondo', style={'color': 'black', 'font-style': 'italic', 'font-weight': 'normal','font-size': '1.85vh', 'margin-left': '0px','margin-bottom':'20px'})
+
+    ],style={'margin-left': '20px', 'justify-content': 'center','display': 'flex', 'align-items': 'flex-end'}),
+    
+    
+    #FILTRO DETTAGLIO FONDO
+    html.Div(
+        style={'text-align': 'center', 'margin-left': '30px'},  # Added style to center align the content
+        children=[
+            dcc.Dropdown(
+                id='dettaglio_fondo',
+                options=[{'label': nome_fondi["Nome 2"].loc[fondo], 'value': fondo} for fondo in nome_fondi.index],
+                style={'width': '70%','height':'80%', 'display': 'inline-block'}
+                ),
+            
+            
+            dash_table.DataTable(
+                    id='stats',
+                    columns=[
+                        {"name": [" ", "Nome"], "id": "nome"},
+                        {"name": ["Performance", "IIS"], "id": "perfiis"},
+                        {"name": ["Performance", "PIC"], "id": "perfpic"},
+                        {"name": ["Performance", "Effetto Strategia"], "id": "perfstra"},
+                        {"name": ["Performance", "Prezzo Iniziale"], "id": "perfprin"},
+                        {"name": ["Performance", "Prezzo Finale"], "id": "perfprfin"},   
+                        {"name": ["Performance", "Prezzo Medio"], "id": "perfprmed"}, 
+                        {"name": ["Performance", "Rimbalzo per parità IIS"], "id": "perfrimbiis"}, 
+                        {"name": ["Performance", "Rimbalzo per parità PIC"], "id": "perfrimbpic"}, 
+                        {"name": ["Volatilità", "IIS"], "id": "voliis"},
+                        {"name": ["Volatilità", "PIC"], "id": "volpic"},
+                        {"name": ["Volatilità", "Effetto Strategia"], "id": "volstra"},
+                        {"name": ["Max Draw-Down", "IIS"], "id": "mddiis"},
+                        {"name": ["Max Draw-Down", "PIC"], "id": "mddpic"},
+                        {"name": ["Max Draw-Down", "Effetto Strategia"], "id": "mddstra"},
+                    ],
+                    data=None,
+                    merge_duplicate_headers=True,
+                    style_table={                
+                        'margin': 'auto',  
+                    },
+                    style_header={
+                        'backgroundColor': 'royalblue',
+                        'color': 'white',
+                        'fontWeight': 'bold',
+                        'text-align': 'center'
+                    },
+                    style_cell={'textAlign': 'center', 'fontSize':'0.75vw'}
+                )
+            
+        ]
+    ),
+    
+    
+    #GRAFICI GROSSI
+    html.Div([
+        dcc.Graph(id='grafico_dettaglio'),  # questo è il componente in cui il grafico verrà visualizzato
+    ]),  
+    
+    
+    
+    
+    #TABELLA RISULTATI
 #     html.Div([dash_table.DataTable(
 #             id='stats',
 #             columns=[
@@ -475,7 +541,7 @@ app.layout = html.Div([
 
  ]) 
 
-#%% 
+
 @app.callback(
     Output('date_error', 'children'),
     [Input('date_picker', 'date')]
@@ -508,7 +574,7 @@ def motore(date_picker, societa, asset_class, ranking, media):
         print(media)
         
         
-        # %% CALCOLO PERFORMANCE
+
         ret_quota_netta = quota_netta.pct_change()[1:]
         ret_quota_lorda = quota_lorda.pct_change()[1:]
         ret_bmk = bmk.pct_change()[1:]
@@ -520,7 +586,7 @@ def motore(date_picker, societa, asset_class, ranking, media):
         ret_bmk = ret_bmk[ret_bmk.index >= date_picker]
         ret_categoria = ret_categoria[ret_categoria.index >= date_picker]
         
-        #%% calcolo cumulative da data inizio
+
 
         #NETTA
         cum_quota_netta = pd.DataFrame(columns=ret_quota_netta.columns, index = ret_quota_netta.index)
@@ -551,7 +617,7 @@ def motore(date_picker, societa, asset_class, ranking, media):
         cum_categoria = cum_categoria -1
 
 
-        #%% DECODIFICO I FILTRI DEI CAMPI per filtri
+
         
         # SOCIETA: ['ALL', 'MIF+GAMAX', 'MGF']
         if societa == 'ALL' :
@@ -580,7 +646,7 @@ def motore(date_picker, societa, asset_class, ranking, media):
             rk = ['NO']
 
        
-        #%% all LORDO
+
         codifiche = codifiche_all[(codifiche_all['BMK'] == 'SI') & (codifiche_all['SGR'].isin(soc)) & (codifiche_all['Asset class'].isin(ac)) & (codifiche_all['posizionamento'].isin(rk))]
 
 
@@ -629,7 +695,7 @@ def motore(date_picker, societa, asset_class, ranking, media):
         er_lordo = cum_ret - cum_alfa
         pesi_er_lordo = nav_lordo.iloc[-1]
 
-        # %% ALL NETTO
+
         codifiche = codifiche_all[(codifiche_all['CAT'] == 'SI') & (codifiche_all['SGR'].isin(soc)) & (codifiche_all['Asset class'].isin(ac)) & (codifiche_all['posizionamento'].isin(rk))]
 
 
@@ -676,8 +742,12 @@ def motore(date_picker, societa, asset_class, ranking, media):
 
         er_netto = cum_ret - cum_alfa
         pesi_er_netto = nav_netto.iloc[-1]
-#%%
-        #GRAFICO IIS
+        
+        
+          
+    
+        
+        #GRAFICO AGGREGATO
         
         #er_graph = {'data': [{'x':er_netto.index  , 'y':np.array(er_netto) , 'type': 'scatter', 'mode': 'lines+markers', 'name': 'Test'}]}
         
@@ -691,10 +761,92 @@ def motore(date_picker, societa, asset_class, ranking, media):
         
         
         
+        
         return er_graph
     else:
         return {}
+    
+    
+    
+    
+@app.callback(
+    Output('grafico_dettaglio', 'figure'),
+    
+    [Input('dettaglio_fondo', 'value'),
+     Input('date_picker', 'date')
+    ]
+)
+
+def motoreDettaglio(dettaglio_fondo, date_picker):
+    
+    if dettaglio_fondo is not None and date_picker is not None:
         
+            
+        ret_quota_netta = quota_netta.pct_change()[1:]
+        ret_quota_lorda = quota_lorda.pct_change()[1:]
+        ret_bmk = bmk.pct_change()[1:]
+        ret_categoria = cat_morningstar.pct_change()[1:]
+        
+        
+        
+        #filtro per data inizio
+        ret_quota_netta = ret_quota_netta[ret_quota_netta.index >= date_picker]
+        ret_quota_lorda = ret_quota_lorda[ret_quota_lorda.index >= date_picker]
+        ret_bmk = ret_bmk[ret_bmk.index >= date_picker]
+        ret_categoria = ret_categoria[ret_categoria.index >= date_picker]
+        
+        
+        #NETTA
+        cum_quota_netta = pd.DataFrame(columns=ret_quota_netta.columns, index = ret_quota_netta.index)
+        cum_quota_netta.iloc[0] = 1
+        for i in range(1,len(cum_quota_netta)):
+            cum_quota_netta.iloc[i] = cum_quota_netta.iloc[i-1] * ( 1 + ret_quota_netta.iloc[i])
+        cum_quota_netta = cum_quota_netta -1
+            
+        #LORDA    
+        cum_quota_lorda = pd.DataFrame(columns=ret_quota_lorda.columns, index = ret_quota_lorda.index)
+        cum_quota_lorda.iloc[0] = 1
+        for i in range(1,len(cum_quota_lorda)):
+            cum_quota_lorda.iloc[i] = cum_quota_lorda.iloc[i-1] * ( 1 + ret_quota_lorda.iloc[i])
+        cum_quota_lorda = cum_quota_lorda -1
+        
+        #BMK
+        cum_bmk = pd.DataFrame(columns=ret_bmk.columns, index = ret_bmk.index)
+        cum_bmk.iloc[0] = 1
+        for i in range(1,len(cum_bmk)):
+            cum_bmk.iloc[i] = cum_bmk.iloc[i-1] * ( 1 + ret_bmk.iloc[i])
+        cum_bmk = cum_bmk -1
+        
+        #CATEGORIA
+        cum_categoria = pd.DataFrame(columns=ret_categoria.columns, index = ret_categoria.index)
+        cum_categoria.iloc[0] = 1
+        for i in range(1,len(cum_categoria)):
+            cum_categoria.iloc[i] = cum_categoria.iloc[i-1] * ( 1 + ret_categoria.iloc[i])
+        cum_categoria = cum_categoria -1
+        
+        
+        
+        cum_quota_netta = cum_quota_netta[dettaglio_fondo]
+        cum_quota_lorda = cum_quota_lorda[dettaglio_fondo]
+        cum_bmk = cum_bmk[nome_fondi['serve per BMK'].loc[dettaglio_fondo]]
+        cum_categoria = cum_categoria[nome_fondi['serve per CAT M*'].loc[dettaglio_fondo]]
+        
+        er_netto = cum_quota_netta - cum_categoria
+        er_lordo = cum_quota_lorda - cum_bmk
+            
+        
+    
+    
+        # GRAFICO DETTAGLIO FONDO
+        fondo_graph = go.Figure()
+        fondo_graph.add_trace(go.Scatter(x=er_netto.index, y=er_netto, mode='lines', name='ER Netto', line=dict(color='lightsteelblue')))
+        fondo_graph.add_trace(go.Scatter(x=er_lordo.index,y=er_lordo, mode='lines', name='ER Lordo', line=dict(color='midnightblue')))
+        
+        
+        return fondo_graph
+    
+    else:
+        return {}
 
 
 if __name__ == '__main__':
