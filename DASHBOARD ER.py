@@ -19,35 +19,33 @@ from io import BytesIO
 import requests
 
 #%%
-
-directory = r'G:\Analisi e Performance Prodotti\Prodotti\Analisi Offerta di Prodotto\Presidenza Funds Performance & Positioning\2023\2023.06\python'
-os.chdir(directory)
+url = 'https://raw.githubusercontent.com/TurcanuDionisie/Dashboard_ER/main/'
 
 
 #%% CARICAMENTO DATI SOTTOSTANTI E NON VARIABILI
 
 #  QUOTA NETTA
-file_path = "I:/Documenti/File PMC/In Corso/a&p - universo mgf italiani.xlsx" 
+file_path = url+ "universo_mgf_italiani.xlsx" 
 sheet_name = "Quota Pubb Rettificata"
 qpubb_MGF = pd.read_excel(file_path, sheet_name=sheet_name, index_col=0)
 qpubb_MGF = qpubb_MGF.iloc[2:]
 
 
-file_path = "I:/Documenti/File PMC/In Corso/par - universo ch mif sintesi.xlsx" 
+file_path = url+"universo_ch_mif_sintesi.xlsx" 
 sheet_name = "Q.ta Pubblicata"
 qpubb_CH_MIF = pd.read_excel(file_path, sheet_name=sheet_name, index_col=0)
 qpubb_CH_MIF.columns = qpubb_CH_MIF.iloc[1]
 qpubb_CH_MIF = qpubb_CH_MIF[2:]
 
 
-file_path = "I:/Documenti/File PMC/In Corso/par - universo mbb mif sintesi.xlsx" 
+file_path = url+"universo_mbb_mif_sintesi.xlsx" 
 sheet_name = "Q.ta Pubblicata"
 qpubb_MBB_MIF = pd.read_excel(file_path, sheet_name=sheet_name, index_col=0)
 qpubb_MBB_MIF.columns = qpubb_MBB_MIF.iloc[1]
 qpubb_MBB_MIF = qpubb_MBB_MIF[2:]
 
 
-file_path = "I:/Documenti/File PMC/In Corso/par - universo gamax sintesi.xlsx" 
+file_path = url+"universo_gamax_sintesi.xlsx" 
 sheet_name = "Q.ta Pubblicata Rettificata"
 qpubb_GAMAX = pd.read_excel(file_path, sheet_name=sheet_name, index_col=0)
 qpubb_GAMAX.columns = qpubb_GAMAX.iloc[1]
@@ -68,27 +66,27 @@ quota_netta = quota_netta.apply(pd.to_numeric)
 
 
 # QUOTA LORDA
-file_path = "I:/Documenti/File PMC/In Corso/a&p - universo mgf italiani.xlsx" 
+file_path = url+ "universo_mgf_italiani.xlsx" 
 sheet_name = "Quota Lorda Opz 2"
 qlorda_MGF = pd.read_excel(file_path, sheet_name=sheet_name, index_col=0)
 qlorda_MGF = qlorda_MGF.iloc[2:]
 
 
-file_path = "I:/Documenti/File PMC/In Corso/par - universo ch mif sintesi.xlsx" 
+file_path = url+"universo_ch_mif_sintesi.xlsx" 
 sheet_name = "Q.ta BMK"
 qlorda_CH_MIF = pd.read_excel(file_path, sheet_name=sheet_name, index_col=0)
 qlorda_CH_MIF.columns = qlorda_CH_MIF.iloc[1]
 qlorda_CH_MIF = qlorda_CH_MIF[2:]
 
 
-file_path = "I:/Documenti/File PMC/In Corso/par - universo mbb mif sintesi.xlsx" 
+file_path = url+"universo_mbb_mif_sintesi.xlsx"  
 sheet_name = "Q.ta BMK"
 qlorda_MBB_MIF = pd.read_excel(file_path, sheet_name=sheet_name, index_col=0)
 qlorda_MBB_MIF.columns = qlorda_MBB_MIF.iloc[1]
 qlorda_MBB_MIF = qlorda_MBB_MIF[2:]
 
 
-file_path = "I:/Documenti/File PMC/In Corso/par - universo gamax sintesi.xlsx" 
+file_path = url+"universo_gamax_sintesi.xlsx" 
 sheet_name = "Q.ta BMK"
 qlorda_GAMAX = pd.read_excel(file_path, sheet_name=sheet_name, index_col=0)
 qlorda_GAMAX.columns = qlorda_GAMAX.iloc[1]
@@ -108,28 +106,27 @@ quota_lorda = quota_lorda.apply(pd.to_numeric)
 
 # NAV
 
-file_path = "I:/Documenti/File PMC/In Corso/a&p - universo mgf italiani.xlsx" 
+file_path = url+ "universo_mgf_italiani.xlsx" 
 sheet_name = "NAV Totale"
 nav_MGF = pd.read_excel(file_path, sheet_name=sheet_name, index_col=0)
 nav_MGF.columns = nav_MGF.iloc[0]
 nav_MGF = nav_MGF.iloc[2:]
 
-
-file_path = "I:/Documenti/File PMC/In Corso/par - universo ch mif sintesi.xlsx" 
+file_path = url+"universo_ch_mif_sintesi.xlsx" 
 sheet_name = "NAV Totale"
 nav_CH_MIF = pd.read_excel(file_path, sheet_name=sheet_name, index_col=0)
 nav_CH_MIF.columns = nav_CH_MIF.iloc[0]
 nav_CH_MIF = nav_CH_MIF[2:]
 nav_CH_MIF = nav_CH_MIF.drop(nav_CH_MIF.columns[-1], axis=1)
 
-file_path = "I:/Documenti/File PMC/In Corso/par - universo mbb mif sintesi.xlsx" 
+file_path = url+"universo_mbb_mif_sintesi.xlsx" 
 sheet_name = "NAV Totale"
 nav_MBB_MIF = pd.read_excel(file_path, sheet_name=sheet_name, index_col=0)
 nav_MBB_MIF.columns = nav_MBB_MIF.iloc[0]
 nav_MBB_MIF = nav_MBB_MIF[2:]
 nav_MBB_MIF = nav_MBB_MIF[nav_MBB_MIF.columns[:-1]]
 
-file_path = "I:/Documenti/File PMC/In Corso/par - universo gamax sintesi.xlsx" 
+file_path = url+"universo_gamax_sintesi.xlsx"  
 sheet_name = "NAV Totale"
 nav_GAMAX = pd.read_excel(file_path, sheet_name=sheet_name, index_col=0)
 nav_GAMAX.columns = nav_GAMAX.iloc[0]
@@ -149,28 +146,28 @@ for df in dataframes[1:]:
 df_nav = df_nav.apply(pd.to_numeric)
 
 #  BMK
-file_path = "I:/Documenti/File PMC/In Corso/a&p - universo mgf italiani.xlsx" 
+file_path = url+ "universo_mgf_italiani.xlsx" 
 sheet_name = "BMK_SERIE_STO"
 bmk_MGF = pd.read_excel(file_path, sheet_name=sheet_name, index_col=0)
 bmk_MGF.columns = bmk_MGF.iloc[0]
 bmk_MGF = bmk_MGF[3:]
 
 
-file_path = "I:/Documenti/File PMC/In Corso/par - universo ch mif sintesi.xlsx" 
+file_path = url+"universo_ch_mif_sintesi.xlsx" 
 sheet_name = "BMK"
 bmk_CH_MIF = pd.read_excel(file_path, sheet_name=sheet_name, index_col=0)
 bmk_CH_MIF.columns = bmk_CH_MIF.iloc[0]
 bmk_CH_MIF = bmk_CH_MIF[1:]
 
 
-file_path = "I:/Documenti/File PMC/In Corso/par - universo mbb mif sintesi.xlsx" 
+file_path = url+"universo_mbb_mif_sintesi.xlsx" 
 sheet_name = "BMK"
 bmk_MBB_MIF = pd.read_excel(file_path, sheet_name=sheet_name, index_col=0)
 bmk_MBB_MIF.columns = bmk_MBB_MIF.iloc[0]
 bmk_MBB_MIF = bmk_MBB_MIF[1:]
 
 
-file_path = "I:/Documenti/File PMC/In Corso/par - universo gamax sintesi.xlsx" 
+file_path = url+"universo_gamax_sintesi.xlsx" 
 sheet_name = "BMK"
 bmk_GAMAX = pd.read_excel(file_path, sheet_name=sheet_name, index_col=0)
 bmk_GAMAX.columns = bmk_GAMAX.iloc[2]
@@ -190,7 +187,7 @@ bmk = bmk.apply(pd.to_numeric)
     
     
 # CATEGORIA
-file_path = "I:/Documenti/File PMC/In Corso/par - universo categoria morningstar.xlsx" 
+file_path = url+"universo_categoria_morningstar.xlsx" 
 sheet_name = "Cat MStar utilizzate"
 cat_morningstar = pd.read_excel(file_path, sheet_name=sheet_name, index_col=0)
 cat_morningstar = cat_morningstar.iloc[2:]
@@ -201,7 +198,7 @@ cat_morningstar = cat_morningstar.apply(pd.to_numeric)
 
 #FILE DECODIFICA ALL 
 
-codifiche_all = pd.read_excel('Analisi ER netto_lordo_V2.xlsx', sheet_name='codifica').set_index('Isin')
+codifiche_all = pd.read_excel(url+'codifiche.xlsx', sheet_name='codifica').set_index('Isin')
 
 codifiche = codifiche_all[(codifiche_all ['BMK'] == 'SI')]
 #LORDO
@@ -848,7 +845,7 @@ def motoreDettaglio(dettaglio_fondo, date_picker):
         
         
         
-        podio = pd.read_excel('230510 - Analisi MAP - Elementi per il podio  v2 APRILE 23.xlsx', sheet_name ='x dashboard')
+        podio = pd.read_excel(url+'dati_podio.xlsx', sheet_name ='x dashboard')
         podio= podio.set_index('isin')
 
         
