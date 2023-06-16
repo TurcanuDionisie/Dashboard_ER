@@ -746,7 +746,7 @@ def motore(date_picker, societa, asset_class, ranking, media):
         
         return er_graph
     else:
-        return {}
+        return {None}
     
     
     
@@ -882,7 +882,7 @@ def motoreDettaglio(dettaglio_fondo, date_picker):
         return fondo_graph, tabs
     
     else:
-        return {}
+        return {None}
 
 
 if __name__ == '__main__':
