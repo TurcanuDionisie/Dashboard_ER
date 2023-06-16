@@ -197,7 +197,7 @@ cat_morningstar = cat_morningstar.apply(pd.to_numeric)
 
 #FILE DECODIFICA ALL 
 
-codifiche_all = pd.read_excel(url+'codifiche', sheet_name='codifica').set_index('Isin')
+codifiche_all = pd.read_excel(url+'codifiche.xlsx', sheet_name='codifica').set_index('Isin')
 
 codifiche = codifiche_all[(codifiche_all ['BMK'] == 'SI')]
 #LORDO
