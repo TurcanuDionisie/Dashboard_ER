@@ -318,6 +318,13 @@ nav_netto_all = nav_netto.copy()
 #%% ELEMENTI PER LA DASHBOARD
 nome_fondi = codifiche_all[(codifiche_all['CAT'] == 'SI') | (codifiche_all['BMK'] == 'SI') & (codifiche_all['posizionamento'] == 'SI')] 
 
+from datetime import timedelta
+
+today = dt.today()
+first_day_of_month = dt(today.year, today.month, 1)
+last_day_of_previous_month = first_day_of_month - timedelta(days=1)
+
+end_of_previous_month = last_day_of_previous_month.strftime('%Y-%m-%d')
 
 #%% DASHBOARD: LAYOUT
 
@@ -355,11 +362,13 @@ app.index_string = '''
 app.layout = html.Div([
   
     #TITOLO
-    html.Div([
-        html.H1('DashBoard ER'),
-        html.H2('by Monitoraggio & Analisi Prodotti di Investimento', style={'color': 'black', 'font-style': 'italic', 'font-weight': 'normal','font-size': '1.85vh', 'margin-left': '0px','margin-bottom':'20px'})
+    # html.Div([
+        html.Div(html.H1('DashBoard ER'), style={'margin-left': '20px', 'justify-content': 'center','display': 'flex', 'align-items': 'flex-end'}),
+        html.Div(html.H2('by Monitoraggio & Analisi Prodotti di Investimento', 
+                 style={'margin-top':'-10px','color': 'black', 'font-style': 'italic', 'font-weight': 'normal','font-size': '1.85vh', 'margin-left': '0px','margin-bottom':'20px', 'justify-content': 'center'}),
+                 style={'margin-left': '20px', 'justify-content': 'center','display': 'flex', 'align-items': 'flex-end'}),
 
-    ],style={'margin-left': '20px', 'justify-content': 'center','display': 'flex', 'align-items': 'flex-end'}),
+    # ],style={'margin-left': '20px', 'justify-content': 'center','display': 'flex', 'align-items': 'flex-end'}),
     
     # TABELLA INPUT
     html.Div([
@@ -435,8 +444,7 @@ app.layout = html.Div([
     
     
     html.Div([
-        html.H2('Dettaglio fondo', style={'color': 'black', 'font-style': 'italic', 'font-weight': 'normal','font-size': '1.85vh', 'margin-left': '0px','margin-bottom':'20px'})
-
+        html.H1('Dettaglio Fondo')
     ],style={'margin-left': '20px', 'justify-content': 'center','display': 'flex', 'align-items': 'flex-end'}),
     
     
@@ -450,7 +458,7 @@ app.layout = html.Div([
                 style={'width': '70%','height':'80%', 'display': 'inline-block'}
                 ),
             
-            
+            html.Div('Dati al: ' + end_of_previous_month, style={'margin-top':'20px'}),
             dash_table.DataTable(
                     id='tabella',
                     columns=[
@@ -478,57 +486,16 @@ app.layout = html.Div([
                     },
                     style_cell={'textAlign': 'center', 'fontSize':'0.75vw'}
                 )
-            
         ]
     ),
     
     
+    
     #GRAFICI GROSSI
     html.Div([
-        dcc.Graph(id='grafico_dettaglio'),  # questo è il componente in cui il grafico verrà visualizzato
-    ]),  
+        dcc.Graph(id='grafico_dettaglio') # questo è il componente in cui il grafico verrà visualizzato
+    ], style={'margin-top':'20px'} ),  
     
-    
-    
-    
-    #TABELLA RISULTATI
-#     html.Div([dash_table.DataTable(
-#             id='stats',
-#             columns=[
-#                 {"name": [" ", "Nome"], "id": "nome"},
-#                 {"name": ["Performance", "IIS"], "id": "perfiis"},
-#                 {"name": ["Performance", "PIC"], "id": "perfpic"},
-#                 {"name": ["Performance", "Effetto Strategia"], "id": "perfstra"},
-#                 {"name": ["Performance", "Prezzo Iniziale"], "id": "perfprin"},
-#                 {"name": ["Performance", "Prezzo Finale"], "id": "perfprfin"},   
-#                 {"name": ["Performance", "Prezzo Medio"], "id": "perfprmed"}, 
-#                 {"name": ["Performance", "Rimbalzo per parità IIS"], "id": "perfrimbiis"}, 
-#                 {"name": ["Performance", "Rimbalzo per parità PIC"], "id": "perfrimbpic"}, 
-#                 {"name": ["Volatilità", "IIS"], "id": "voliis"},
-#                 {"name": ["Volatilità", "PIC"], "id": "volpic"},
-#                 {"name": ["Volatilità", "Effetto Strategia"], "id": "volstra"},
-#                 {"name": ["Max Draw-Down", "IIS"], "id": "mddiis"},
-#                 {"name": ["Max Draw-Down", "PIC"], "id": "mddpic"},
-#                 {"name": ["Max Draw-Down", "Effetto Strategia"], "id": "mddstra"},
-#             ],
-#             data=None,
-#             merge_duplicate_headers=True,
-#             style_table={                
-#                 'margin': 'auto',  
-#             },
-#             style_header={
-#                 'backgroundColor': 'royalblue',
-#                 'color': 'white',
-#                 'fontWeight': 'bold',
-#                 'text-align': 'center'
-#             },
-#             style_cell={'textAlign': 'center', 'fontSize':'0.75vw'}
-#         )
-                
-#     ],style={'justify-content': 'center','text-align': 'center', 'width':'100%','marginTop':'40px'}
-# ),
-
-
 
  ]) 
 
@@ -740,18 +707,46 @@ def motore(date_picker, societa, asset_class, ranking, media):
         
         #GRAFICO AGGREGATO
         
-        #er_graph = {'data': [{'x':er_netto.index  , 'y':np.array(er_netto) , 'type': 'scatter', 'mode': 'lines+markers', 'name': 'Test'}]}
         
         er_graph = go.Figure()
-        er_graph.add_trace(go.Scatter(x=er_netto.index, y=er_netto, mode='lines', name='ER Netto', line=dict(color='lightsteelblue')))
-        er_graph.add_trace(go.Scatter(x=er_lordo.index,y=er_lordo, mode='lines', name='ER Lordo', line=dict(color='midnightblue')))
+        er_graph.add_trace(go.Scatter(x=er_netto.index, y=er_netto, mode='lines', name='ER Netto', line=dict(color='lightsteelblue'),hovertemplate='(%{x}, %{y:.2f}%)'))
+        er_graph.add_trace(go.Scatter(x=er_lordo.index,y=er_lordo, mode='lines', name='ER Lordo', line=dict(color='midnightblue'),hovertemplate='(%{x}, %{y:.2f}%)'))
         
-        er_graph.update_layout(legend=dict(orientation="h", yanchor="top", y=1.07, xanchor="center", x=0.15, font=dict(size=15)), title={'text':f'Dettaglio ER dati al '+str(er_netto.index[1]), 'font':{'size': 24}, 'x': 0.5,'y': 0.95, 'xanchor': 'center','yanchor': 'top'},
-                                plot_bgcolor='white',xaxis=dict(showgrid=False),yaxis=dict(showgrid=True, gridcolor='lightgrey', gridwidth=1, tickwidth=2)
-                                )
+        # er_graph.update_layout(legend=dict(orientation="h", yanchor="top", y=1.07, xanchor="center", x=0.15, font=dict(size=15)),
+        #                        title={'text':f'Dettaglio ER dati al '+str(er_netto.index[1]), 'font':{'size': 24}, 'x': 0.5,'y': 0.95, 'xanchor': 'center','yanchor': 'top'},
+        #                        plot_bgcolor='white',xaxis=dict(showgrid=False),yaxis=dict(showgrid=True, gridcolor='lightgrey', 
+        #                        gridwidth=1, tickwidth=2, tickformat='%'))
         
-        
-        
+        er_graph.update_layout(
+            legend=dict(
+                orientation="h",
+                yanchor="top",
+                y=1.07,
+                xanchor="center",
+                x=0.15,
+                font=dict(size=15)
+            ),
+            title={
+                'text':f'Dettaglio ER dal '+ str(er_netto.index[0].strftime("%Y-%m-%d")) + ' al ' + str(er_netto.index[-1].strftime("%Y-%m-%d")),
+                'font': {'size': 24},
+                'x': 0.5,
+                'y': 0.95,
+                'xanchor': 'center',
+                'yanchor': 'top'
+            },
+        plot_bgcolor='white',
+        xaxis=dict(showgrid=False),
+        yaxis=dict(
+            showgrid=True,
+            gridcolor='lightgrey',
+            gridwidth=1,
+            tickwidth=2,
+            tickformat=',.2%',  # Rounded to 2 decimals and displayed as percentage
+            
+        )
+        )
+
+            
         
         return er_graph
     else:
@@ -839,15 +834,17 @@ def motoreDettaglio(dettaglio_fondo, date_picker):
         fondo_graph = go.Figure()
         
         if(dettaglio_fondo in (nome_fondi_netto.index)):
-            fondo_graph.add_trace(go.Scatter(x=er_netto.index, y=er_netto, mode='lines', name='ER Netto', line=dict(color='lightsteelblue')))
+            fondo_graph.add_trace(go.Scatter(x=er_netto.index, y=er_netto, mode='lines', name='ER Netto', line=dict(color='lightsteelblue'), hovertemplate='(%{x}, %{y:.2f}%)'))
         
         if(dettaglio_fondo in (nome_fondi_lordo.index)):
-            fondo_graph.add_trace(go.Scatter(x=er_lordo.index,y=er_lordo, mode='lines', name='ER Lordo', line=dict(color='midnightblue')))
+            fondo_graph.add_trace(go.Scatter(x=er_lordo.index,y=er_lordo, mode='lines', name='ER Lordo', line=dict(color='midnightblue'), hovertemplate='(%{x}, %{y:.2f}%)'))
         
         
-        fondo_graph.update_layout(legend=dict(orientation="h", yanchor="top", y=1.07, xanchor="center", x=0.15, font=dict(size=15)), title={'text':f'Dettaglio ER dati al '+str(er_netto.index[1]), 'font':{'size': 24}, 'x': 0.5,'y': 0.95, 'xanchor': 'center','yanchor': 'top'},
-                                plot_bgcolor='white',xaxis=dict(showgrid=False),yaxis=dict(showgrid=True, gridcolor='lightgrey', gridwidth=1, tickwidth=2)
-                                )
+        fondo_graph.update_layout(legend=dict(orientation="h", yanchor="top", y=1.07, xanchor="center", x=0.15, font=dict(size=15)), 
+                                  title={'text':f'Dettaglio ER dal '+ str(er_netto.index[0].strftime("%Y-%m-%d")) + ' al ' + str(er_netto.index[-1].strftime("%Y-%m-%d")) , 
+                                'font':{'size': 24}, 'x': 0.5,'y': 0.95, 'xanchor': 'center','yanchor': 'top'},
+                                plot_bgcolor='white',xaxis=dict(showgrid=False),yaxis=dict(showgrid=True, gridcolor='lightgrey', 
+                                gridwidth=1, tickwidth=2, tickformat=',.2%'))
         
         
         
@@ -858,11 +855,11 @@ def motoreDettaglio(dettaglio_fondo, date_picker):
         tab = pd.DataFrame(index = ['rk_net','rk_gross','er_net','er_gross','perf'], columns=['Categoria','1M','3M','YTD','1Y','2022','2021','2020'])
         
         for t in ['1M','3M','YTD','1Y','2022','2021','2020']:
-            tab[t].loc['rk_net'] = np.array(round(podio['net_'+t].loc[dettaglio_fondo],2))
-            tab[t].loc['rk_gross'] = np.array(round(podio['gross_'+t].loc[dettaglio_fondo],2))
-            tab[t].loc['er_net'] = np.array(round(podio['ernetto_'+t].loc[dettaglio_fondo],2))
-            tab[t].loc['er_gross'] = np.array(round(podio['erlordo_'+t].loc[dettaglio_fondo],2))
-            tab[t].loc['perf'] = np.array(round(podio['perf_'+t].loc[dettaglio_fondo],2))
+            tab[t].loc['rk_net'] = str(np.array(round(podio['net_'+t].loc[dettaglio_fondo]*100,2))) +'%'
+            tab[t].loc['rk_gross'] = str(np.array(round(podio['gross_'+t].loc[dettaglio_fondo]*100,2))) +'%'
+            tab[t].loc['er_net'] = str(np.array(round(podio['ernetto_'+t].loc[dettaglio_fondo]*100,2))) +'%'
+            tab[t].loc['er_gross'] = str(np.array(round(podio['erlordo_'+t].loc[dettaglio_fondo]*100,2))) +'%'
+            tab[t].loc['perf'] = str(np.array(round(podio['perf_'+t].loc[dettaglio_fondo]*100,2))) +'%'
         
         tab['Categoria'].loc['rk_net'] = nome_fondi['Asset class'].loc[dettaglio_fondo]
         

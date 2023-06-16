@@ -733,7 +733,7 @@ if(dettaglio_fondo in (nome_fondi_netto.index)):
     er_netto = cum_quota_netta - cum_categoria
 
 #%%
-
+dettaglio_fondo = 'IE0005372309'
 
 podio = pd.read_excel('230510 - Analisi MAP - Elementi per il podio  v2 APRILE 23.xlsx', sheet_name ='x dashboard')
 podio= podio.set_index('isin')
@@ -742,11 +742,11 @@ podio= podio.set_index('isin')
 tab = pd.DataFrame(index = ['rk_net','rk_gross','er_net','er_gross','perf'], columns=['Categoria','1M','3M','YTD','1Y','2022','2021','2020'])
 
 for t in ['1M','3M','YTD','1Y','2022','2021','2020']:
-    tab[t].loc['rk_net'] = np.array(round(podio['net_'+t].loc[dettaglio_fondo],2))
-    tab[t].loc['rk_gross'] = np.array(round(podio['gross_'+t].loc[dettaglio_fondo],2))
-    tab[t].loc['er_net'] = np.array(round(podio['ernetto_'+t].loc[dettaglio_fondo],2))
-    tab[t].loc['er_gross'] = np.array(round(podio['erlordo_'+t].loc[dettaglio_fondo],2))
-    tab[t].loc['perf'] = np.array(round(podio['perf_'+t].loc[dettaglio_fondo],2))
+    tab[t].loc['rk_net'] = str(np.array(round(podio['net_'+t].loc[dettaglio_fondo]*100,2))) +'%'
+    tab[t].loc['rk_gross'] = str(np.array(round(podio['gross_'+t].loc[dettaglio_fondo]*100,2))) +'%'
+    tab[t].loc['er_net'] = str(np.array(round(podio['ernetto_'+t].loc[dettaglio_fondo]*100,2))) +'%'
+    tab[t].loc['er_gross'] = str(np.array(round(podio['erlordo_'+t].loc[dettaglio_fondo]*100,2))) +'%'
+    tab[t].loc['perf'] = str(np.array(round(podio['perf_'+t].loc[dettaglio_fondo]*100,2))) +'%'
 
 tab['Categoria'].loc['rk_net'] = nome_fondi['Asset class'].loc[dettaglio_fondo]
 
