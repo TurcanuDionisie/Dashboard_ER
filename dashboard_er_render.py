@@ -746,7 +746,7 @@ def motore(date_picker, societa, asset_class, ranking, media):
         
         return er_graph
     else:
-        return {}
+        return []
     
     
     
@@ -837,7 +837,7 @@ def motoreDettaglio(dettaglio_fondo, date_picker):
         
         
         fondo_graph.update_layout(legend=dict(orientation="h", yanchor="top", y=1.07, xanchor="center", x=0.15, font=dict(size=15)), 
-                                  title={'text':f'Dettaglio ER dal '+ str(er_netto.index[0].strftime("%Y-%m-%d")) + ' al ' + str(er_netto.index[-1].strftime("%Y-%m-%d")) , 
+                                  title={'text':str(codifiche_all['Nome 2'].loc[dettaglio_fondo]) + f' Dettaglio ER dal '+ str(er_netto.index[0].strftime("%Y-%m-%d")) + ' al ' + str(er_netto.index[-1].strftime("%Y-%m-%d")) , 
                                 'font':{'size': 24}, 'x': 0.5,'y': 0.95, 'xanchor': 'center','yanchor': 'top'},
                                 plot_bgcolor='white',xaxis=dict(showgrid=False),yaxis=dict(showgrid=True, gridcolor='lightgrey', 
                                 gridwidth=1, tickwidth=2, tickformat=',.2%'))
@@ -882,7 +882,7 @@ def motoreDettaglio(dettaglio_fondo, date_picker):
         return fondo_graph, tabs
     
     else:
-        return {}
+        return []
 
 
 if __name__ == '__main__':
