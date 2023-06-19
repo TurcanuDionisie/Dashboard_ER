@@ -705,14 +705,10 @@ def motore(date_picker, societa, asset_class, ranking, media):
         
         
         er_graph = go.Figure()
+        
         er_graph.add_trace(go.Scatter(x=er_netto.index, y=er_netto, mode='lines', name='ER Netto', line=dict(color='lightsteelblue'),hovertemplate='(%{x}, %{y:.2f}%)'))
         er_graph.add_trace(go.Scatter(x=er_lordo.index,y=er_lordo, mode='lines', name='ER Lordo', line=dict(color='midnightblue'),hovertemplate='(%{x}, %{y:.2f}%)'))
-        
-        # er_graph.update_layout(legend=dict(orientation="h", yanchor="top", y=1.07, xanchor="center", x=0.15, font=dict(size=15)),
-        #                        title={'text':f'Dettaglio ER dati al '+str(er_netto.index[1]), 'font':{'size': 24}, 'x': 0.5,'y': 0.95, 'xanchor': 'center','yanchor': 'top'},
-        #                        plot_bgcolor='white',xaxis=dict(showgrid=False),yaxis=dict(showgrid=True, gridcolor='lightgrey', 
-        #                        gridwidth=1, tickwidth=2, tickformat='%'))
-        
+                
         er_graph.update_layout(
             legend=dict(
                 orientation="h",
@@ -742,11 +738,21 @@ def motore(date_picker, societa, asset_class, ranking, media):
         )
         )
 
+    else: 
+        er_graph = go.Figure()
+        er_graph.update_layout(plot_bgcolor='white',
+        xaxis=dict(showgrid=False),
+        yaxis=dict(
+            showgrid=True,
+            gridcolor='lightgrey',
+            gridwidth=1,
+            tickwidth=2,
+            tickformat=',.2%',  # Rounded to 2 decimals and displayed as percentage
             
-        
-        return er_graph
-    else:
-        return []
+        )
+        )
+    return er_graph
+
     
     
     
@@ -882,7 +888,7 @@ def motoreDettaglio(dettaglio_fondo, date_picker):
         return fondo_graph, tabs
     
     else:
-        return []
+        return {}
 
 
 if __name__ == '__main__':
