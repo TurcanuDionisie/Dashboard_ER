@@ -2,14 +2,10 @@ import pandas as pd
 import os
 import matplotlib as plt
 import numpy as np
-directory = r'G:\Analisi e Performance Prodotti\Prodotti\Analisi Offerta di Prodotto\Presidenza Funds Performance & Positioning\2023\2023.06\python'
+directory = r'G:\Analisi e Performance Prodotti\Prodotti\Analisi Offerta di Prodotto\Presidenza Funds Performance & Positioning\2023\2023.07\python'
 os.chdir(directory)
 
 
-#ciao 123#ciao 123#ciao 123#ciao 123#ciao 123#ciao 123#ciao 123
-
-
-#ciao 123
 # %% QUOTA NETTA
 file_path = "I:/Documenti/File PMC/In Corso/a&p - universo mgf italiani.xlsx" 
 sheet_name = "Quota Pubb Rettificata"
@@ -188,7 +184,7 @@ cat_morningstar = cat_morningstar.apply(pd.to_numeric)
 
 # %% FILE DECODIFICA ALL 
 
-codifiche_all = pd.read_excel('Analisi ER netto_lordo_V2.xlsx', sheet_name='codifica').set_index('Isin')
+codifiche_all = pd.read_excel('codifiche.xlsx', sheet_name='codifica').set_index('Isin')
 
 codifiche = codifiche_all[(codifiche_all ['BMK'] == 'SI')]
 #%% LORDO
@@ -296,10 +292,15 @@ for k in codifiche[codifiche['CAT'] == 'NO'].index:
     nav_netto[codifiche['ISIN AGGREGAZIONE NETTO'].loc[k]] += nav_dict[k]['NAV NETTO']  
     
 nav_netto = nav_netto.replace(np.nan,0)
+nav_netto.loc['2023-06-30'].to_excel('NAV_NETTO_30062023.xlsx') # esporto i NAV netto
+
 for t in nav_netto.index:
     nav_netto.loc[t] = nav_netto.loc[t]/sum(nav_netto.loc[t])
     
 nav_netto_all = nav_netto.copy()
+
+nav_netto_all.loc['2023-06-30'].to_excel('weights_NAV_NETTO_30062023.xlsx') #corrisponde alla colonna weight del file netto
+
 # %% CALCOLO PERFORMANCE
 ret_quota_netta = quota_netta.pct_change()[1:]
 ret_quota_lorda = quota_lorda.pct_change()[1:]
@@ -772,7 +773,7 @@ dataframes = [er_lordo,er_netto, er_lordo_fi,er_lordo_ma, er_lordo_eq, er_netto_
 serie_unite = pd.concat(dataframes, ignore_index=False, axis=1)
 
 serie_unite.columns = ["er_lordo","er_netto","er_lordo_fi","er_lordo_ma","er_lordo_eq","er_netto_fi","er_netto_ma","er_netto_eq"]
-file_name = "er_netto_lordo_finale.xlsx"
+file_name = "er_netto_lordo_finale_30_06.xlsx"
 serie_unite.to_excel(file_name)
 
 dataframes = [pesi_er_lordo,pesi_er_netto, pesi_er_lordo_fi,pesi_er_lordo_ma, pesi_er_lordo_eq, pesi_er_netto_fi,pesi_er_netto_ma,pesi_er_netto_eq]
@@ -781,6 +782,6 @@ dataframes = [pesi_er_lordo,pesi_er_netto, pesi_er_lordo_fi,pesi_er_lordo_ma, pe
 serie_unite = pd.concat(dataframes, ignore_index=False, axis=1)
 
 serie_unite.columns = ["pesi_er_lordo","pesi_er_netto","pesi_er_lordo_fi","pesi_er_lordo_ma","pesi_er_lordo_eq","pesi_er_netto_fi","pesi_er_netto_ma","pesi_er_netto_eq"]
-file_name = "pesi_finale.xlsx"
+file_name = "pesi_finale_30_06.xlsx"
 serie_unite.to_excel(file_name)
 
