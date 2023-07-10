@@ -861,9 +861,9 @@ def motoreDettaglio(dettaglio_fondo, date_picker):
         for t in ['1M','3M','YTD','1Y','2022','2021','2020']:
             tab[t].loc['rk_net'] = str(np.array(int(round(podio['net_'+t].loc[dettaglio_fondo]*100,0))))
             tab[t].loc['rk_gross'] = str(np.array(int(round(podio['gross_'+t].loc[dettaglio_fondo]*100,0))))
-            tab[t].loc['er_net'] = str(np.array(int(round(podio['ernetto_'+t].loc[dettaglio_fondo]*100,2)))) +'%'
-            tab[t].loc['er_gross'] = str(np.array(int(round(podio['erlordo_'+t].loc[dettaglio_fondo]*100,2)))) +'%'
-            tab[t].loc['perf'] = str(np.array(int(round(podio['perf_'+t].loc[dettaglio_fondo]*100,2)))) +'%'
+            tab[t].loc['er_net'] = str(np.array(float(round(podio['ernetto_'+t].loc[dettaglio_fondo]*100,2)))) +'%'
+            tab[t].loc['er_gross'] = str(np.array(float(round(podio['erlordo_'+t].loc[dettaglio_fondo]*100,2)))) +'%'
+            tab[t].loc['perf'] = str(np.array(float(round(podio['perf_'+t].loc[dettaglio_fondo]*100,2)))) +'%'
         
         tab['Categoria'].loc['rk_net'] = nome_fondi['Asset class'].loc[dettaglio_fondo]
         
