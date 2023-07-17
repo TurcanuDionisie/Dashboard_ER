@@ -324,12 +324,13 @@ end_of_previous_month = last_day_of_previous_month.strftime('%Y-%m-%d')
 
 #%% DASHBOARD: LAYOUT
 
-app = dash.Dash(__name__, title ='DashBoard ER',external_stylesheets=[dbc.themes.BOOTSTRAP])
+external_stylesheets = [
+    'https://raw.githubusercontent.com/TurcanuDionisie/Dashboard_ER/main/assets/style.css',
+    dbc.themes.BOOTSTRAP
+]
 
-#CSS
-app.css.append_css({
-    'external_url': url+'assets/style.css'
-})
+app = dash.Dash(__name__, title ='DashBoard ER', external_stylesheets=external_stylesheets)
+
 
 
 server = app.server
