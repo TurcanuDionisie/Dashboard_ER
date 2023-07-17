@@ -480,7 +480,7 @@ app.layout = html.Div([
                         'fontWeight': 'bold',
                         'text-align': 'center'
                     },
-                    style_cell={'textAlign': 'center', 'fontSize':'0.75vw'}
+                    style_cell={'textAlign': 'center', 'fontSize':'1.3vw'}
                 )
         ]
     ),

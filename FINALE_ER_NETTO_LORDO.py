@@ -336,7 +336,7 @@ for i in range(1,len(cum_bmk)):
     cum_bmk.iloc[i] = cum_bmk.iloc[i-1] * ( 1 + ret_bmk.iloc[i])
 cum_bmk = cum_bmk -1
 
-#CATEGORIA
+#CATEGORIA MSTAR
 cum_categoria = pd.DataFrame(columns=ret_categoria.columns, index = ret_categoria.index)
 cum_categoria.iloc[0] = 1
 for i in range(1,len(cum_categoria)):
@@ -364,8 +364,10 @@ for i in ret.columns:
     alfa[i] = ret_bmk[map_dict[i]]
 
 ret_pond = ret * nav_lordo[isin][nav_lordo.index >= '06/30/2022']
+ret_pond_singoli = ret_pond.copy()
 ret_pond = ret_pond.sum(axis=1)
 alfa_pond = alfa * nav_lordo[isin][nav_lordo.index >= '06/30/2022']
+alfa_pond_singoli = alfa_pond.copy()
 alfa_pond = alfa_pond.sum(axis=1)
 
 cum_ret = pd.Series(index = ret_pond.index)
@@ -373,6 +375,7 @@ cum_ret.iloc[0] = 1
 for i in range(1,len(cum_ret)):
     cum_ret.iloc[i] = cum_ret.iloc[i-1] * ( 1 + ret_pond.iloc[i])
 cum_ret = cum_ret -1
+
 
 
 cum_alfa = pd.Series(index = alfa_pond.index)
@@ -384,6 +387,23 @@ cum_alfa = cum_alfa -1
 
 er_lordo = cum_ret - cum_alfa
 pesi_er_lordo = nav_lordo.iloc[-1]
+
+
+#ANALISI ER PONDERATO SINGOLI PER I TOP CONTRIBUTORS AL PONDERATO AGGREGATO
+cum_ret_singoli = ret_pond_singoli.copy()
+first_valid_indices = cum_ret_singoli.apply(pd.Series.first_valid_index)
+
+for i in ret_pond_singoli.columns:
+    singolo = pd.Series(cum_ret_singoli[i])
+    cum_ret_singoli[i].loc[first_valid_indices[i]] = 1
+    for t in range(1,len(pd.Series(cum_ret_singoli[i])):
+        cum_ret_singoli[i].iloc[t] = cum_ret_singoli[i].iloc[t-1] * ( 1 + ret_pond_singoli[i].iloc[t])
+    cum_ret_singoli[i] = cum_ret_singoli[i] -1
+
+
+
+
+
 #%% LORDO FIXED INCOME
 codifiche = codifiche_all[(codifiche_all['BMK'] == 'SI') & (codifiche_all['Asset class'] == 'FixedIncome')]
 
