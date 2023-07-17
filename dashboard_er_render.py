@@ -324,8 +324,14 @@ end_of_previous_month = last_day_of_previous_month.strftime('%Y-%m-%d')
 
 #%% DASHBOARD: LAYOUT
 
-app = dash.Dash(__name__, 
-                title ='DashBoard ER')
+app = dash.Dash(__name__, title ='DashBoard ER',external_stylesheets=[dbc.themes.BOOTSTRAP])
+
+#CSS
+app.css.append_css({
+    'external_url': url+'assets/style.css'
+})
+
+
 server = app.server
 
 # Add the following line to set the favicon
@@ -432,7 +438,10 @@ app.layout = html.Div([
 
     ], style={'display': 'flex', 'justify-content': 'center', 'margin-top': '10px'}),
     
-    
+    html.Div(className="input-group", children=[
+        html.Div(className="col-4"),
+        html.Div(className="col-8", children=html.Button('Calcola', id='calcola', n_clicks=0, className="btn btn-primary btn-lg btn-block"))
+    ]),
     #GRAFICI GROSSI
     html.Div([
         dcc.Graph(id='grafico_er', style={'height': '100%', 'width': '100%'}) # questo è il componente in cui il grafico verrà visualizzato
