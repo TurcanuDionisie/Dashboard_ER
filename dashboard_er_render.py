@@ -438,10 +438,12 @@ app.layout = html.Div([
 
     ], style={'display': 'flex', 'justify-content': 'center', 'margin-top': '10px'}),
     
-    html.Div(className="input-group", children=[
-        html.Div(className="col-4"),
-        html.Div(className="col-8", children=html.Button('Calcola', id='calcola', n_clicks=0, className="btn btn-primary btn-lg btn-block"))
+    #BOTTONE CALCOLA
+    html.Div(className="d-flex justify-content-center", children=[
+        html.Button('Calcola', id='calcola', n_clicks=0, className="btn btn-primary btn-lg")
     ]),
+    
+    
     #GRAFICI GROSSI
     html.Div([
         dcc.Graph(id='grafico_er', style={'height': '100%', 'width': '100%'}) # questo è il componente in cui il grafico verrà visualizzato
@@ -523,10 +525,14 @@ def update_output(date):
       Input('asset_class', 'value'),
       Input('ranking', 'value'),
       Input('media', 'value'),
+      Input('calcola', 'n_clicks')
       ]
 )
 
-def motore(date_picker, societa, asset_class, ranking, media):
+def motore(date_picker, societa, asset_class, ranking, media,n_clicks):
+    
+    if n_clicks <= 0:
+        return {}
     
     if date_picker is not None and societa is not None and asset_class is not None and ranking is not None and media is not None:
         
@@ -748,21 +754,10 @@ def motore(date_picker, societa, asset_class, ranking, media):
             
         )
         )
-
+        return er_graph    
     else: 
-        er_graph = go.Figure()
-        er_graph.update_layout(plot_bgcolor='white',
-        xaxis=dict(showgrid=False),
-        yaxis=dict(
-            showgrid=True,
-            gridcolor='lightgrey',
-            gridwidth=1,
-            tickwidth=2,
-            tickformat=',.2%',  # Rounded to 2 decimals and displayed as percentage
-            
-        )
-        )
-    return er_graph
+        
+        return {}
 
     
     
@@ -776,6 +771,8 @@ def motore(date_picker, societa, asset_class, ranking, media):
 )
 
 def motoreDettaglio(dettaglio_fondo, date_picker):
+    
+    
     
     if dettaglio_fondo is not None and date_picker is not None:
         
@@ -897,35 +894,9 @@ def motoreDettaglio(dettaglio_fondo, date_picker):
          }for i in tab.index] 
         
         
-    
+        return fondo_graph, tabs
     else: 
-        fondo_graph = go.Figure()
-        fondo_graph.update_layout(plot_bgcolor='white',
-        xaxis=dict(showgrid=False),
-        yaxis=dict(
-            showgrid=True,
-            gridcolor='lightgrey',
-            gridwidth=1,
-            tickwidth=2,
-            tickformat=',.2%',  # Rounded to 2 decimals and displayed as percentage
-            
-        )
-        )
-        
-        tabs = [{
-             "cat": None,
-             "type": None,
-             "m1": None,
-             "m3": None,
-             "ytd": None,
-             "y1": None,
-             "_2022_": None,
-             "_2021_": None,
-             "_2020_": None,
-             
-         }for i in tab.index] 
-        
-    return fondo_graph, tabs
+        return {}, {}
 
 if __name__ == '__main__':
     app.run_server()
