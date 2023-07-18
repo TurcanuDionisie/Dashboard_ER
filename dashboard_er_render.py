@@ -897,7 +897,7 @@ def motoreDettaglio(dettaglio_fondo, date_picker):
         
         return fondo_graph, tabs
     else: 
-        return {}, {}
+        return {}, ""
 
 if __name__ == '__main__':
     app.run_server()
