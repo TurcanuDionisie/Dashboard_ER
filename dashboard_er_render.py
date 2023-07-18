@@ -755,7 +755,7 @@ def motore(date_picker, societa, asset_class, ranking, media,n_clicks):
         print(ranking)
         print(media)
         
-        return {}   
+        return er_graph   
     else: 
         
         return {}
