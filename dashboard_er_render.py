@@ -445,6 +445,8 @@ app.layout = html.Div([
     ]),
     
     
+    
+    
     #GRAFICI GROSSI
     html.Div([
         dcc.Graph(id='grafico_er', style={'height': '100%', 'width': '100%'}) # questo è il componente in cui il grafico verrà visualizzato
@@ -725,6 +727,8 @@ def motore(date_picker, societa, asset_class, ranking, media,n_clicks):
         er_graph.add_trace(go.Scatter(x=er_netto.index, y=er_netto, mode='lines', name='ER Netto', line=dict(color='lightsteelblue'),hovertemplate='(%{x}, %{y:.2f}%)'))
         er_graph.add_trace(go.Scatter(x=er_lordo.index,y=er_lordo, mode='lines', name='ER Lordo', line=dict(color='midnightblue'),hovertemplate='(%{x}, %{y:.2f}%)'))
                 
+
+
         er_graph.update_layout(
             legend=dict(
                 orientation="h",
@@ -735,26 +739,30 @@ def motore(date_picker, societa, asset_class, ranking, media,n_clicks):
                 font=dict(size=15)
             ),
             title={
-                'text':f'Dettaglio ER dal '+ str(er_netto.index[0].strftime("%Y-%m-%d")) + ' al ' + str(er_netto.index[-1].strftime("%Y-%m-%d")),
+                'text': f'Dettaglio ER dal ' + str(er_netto.index[0].strftime("%Y-%m-%d")) + ' al ' + str(er_netto.index[-1].strftime("%Y-%m-%d")),
                 'font': {'size': 24},
                 'x': 0.5,
                 'y': 0.95,
                 'xanchor': 'center',
                 'yanchor': 'top'
             },
-        plot_bgcolor='white',
-        xaxis=dict(showgrid=False),
-        yaxis=dict(
-            showgrid=True,
-            gridcolor='lightgrey',
-            gridwidth=1,
-            tickwidth=2,
-            tickformat=',.2%',  # Rounded to 2 decimals and displayed as percentage
-            zerolinecolor='lightcoral', 
-            zerolinewidth=1
-            
+            paper_bgcolor='rgba(0,0,0,0)',  # Set the overall background to transparent
+            plot_bgcolor='rgba(0,0,0,0)',  # Set the plotting area background to transparent
+            xaxis=dict(showgrid=False),
+            yaxis=dict(
+                showgrid=True,
+                gridcolor='lightgrey',
+                gridwidth=1,
+                tickwidth=2,
+                tickformat=',.2%',  # Rounded to 2 decimals and displayed as percentage
+                zerolinecolor='lightcoral',
+                zerolinewidth=1
+            )
         )
-        )
+        
+
+        
+        
         return er_graph    
     else: 
         
@@ -851,13 +859,41 @@ def motoreDettaglio(dettaglio_fondo, date_picker):
             fondo_graph.add_trace(go.Scatter(x=er_lordo.index,y=er_lordo, mode='lines', name='ER Lordo', line=dict(color='midnightblue'), hovertemplate='(%{x}, %{y:.2f}%)'))
         
         
-        fondo_graph.update_layout(legend=dict(orientation="h", yanchor="top", y=1.07, xanchor="center", x=0.15, font=dict(size=15)), 
-                                  title={'text':str(codifiche_all['Nome 2'].loc[dettaglio_fondo]) + f' Dettaglio ER dal '+ str(er_netto.index[0].strftime("%Y-%m-%d")) + ' al ' + str(er_netto.index[-1].strftime("%Y-%m-%d")) , 
-                                'font':{'size': 24}, 'x': 0.5,'y': 0.95, 'xanchor': 'center','yanchor': 'top'},
-                                plot_bgcolor='white',xaxis=dict(showgrid=False),yaxis=dict(showgrid=True, gridcolor='lightgrey',zerolinecolor='lightcoral', zerolinewidth=1, 
-                                gridwidth=1, tickwidth=2, tickformat=',.2%'))
         
         
+        fondo_graph.update_layout(
+            legend=dict(
+                orientation="h",
+                yanchor="top",
+                y=1.07,
+                xanchor="center",
+                x=0.15,
+                font=dict(size=15)
+            ), 
+            title={
+                'text': str(codifiche_all['Nome 2'].loc[dettaglio_fondo]) + f' Dettaglio ER dal '+ str(er_netto.index[0].strftime("%Y-%m-%d")) + ' al ' + str(er_netto.index[-1].strftime("%Y-%m-%d")),
+                'font': {'size': 24},
+                'x': 0.5,
+                'y': 0.95,
+                'xanchor': 'center',
+                'yanchor': 'top'
+            },
+            paper_bgcolor='rgba(0,0,0,0)',  # Set the overall background to transparent
+            plot_bgcolor='rgba(0,0,0,0)',  # Set the plotting area background to transparent
+            xaxis=dict(showgrid=False),
+            yaxis=dict(
+                showgrid=True,
+                gridcolor='lightgrey',
+                zerolinecolor='lightcoral',
+                zerolinewidth=1,
+                gridwidth=1,
+                tickwidth=2,
+                tickformat=',.2%'
+            )
+        )
+
+        
+           
         
         podio = pd.read_excel(url+'dati_podio.xlsx', sheet_name ='x dashboard')
         podio= podio.set_index('isin')
