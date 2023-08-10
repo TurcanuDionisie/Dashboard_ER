@@ -894,10 +894,14 @@ def motoreDettaglio(dettaglio_fondo, date_picker):
 
         
            
+        print("URLLL")
+        print(url)
         
         podio = pd.read_excel(url+'dati_podio.xlsx', sheet_name ='x dashboard')
         podio= podio.set_index('isin')
 
+
+        print(podio.columns)
         
         tab = pd.DataFrame(index = ['rk_net','rk_gross','er_net','er_gross','perf'], columns=['Categoria','1M','3M','YTD','1Y','2022','2021','2020'])
         
@@ -909,6 +913,8 @@ def motoreDettaglio(dettaglio_fondo, date_picker):
             tab[t].loc['perf'] = str(np.array(float(round(podio['perf_'+t].loc[dettaglio_fondo]*100,2)))) +'%'
         
         tab['Categoria'].loc['rk_net'] = nome_fondi['Asset class'].loc[dettaglio_fondo]
+        tab['Categoria'].loc['rk_gross'] = podio['NOME_CAT'].loc[dettaglio_fondo]
+        
         
         tab = tab.rename(index={'rk_net':'Net Rank',
                                 'rk_gross':'Gross Rank',
@@ -929,6 +935,9 @@ def motoreDettaglio(dettaglio_fondo, date_picker):
              "_2020_": tab["2020"].loc[i],
              
          }for i in tab.index] 
+        
+        
+        
         
         
         return fondo_graph, tabs
