@@ -469,6 +469,7 @@ app.layout = html.Div([
                 ),
             
             html.Div('Dati al: ' + end_of_previous_month, style={'margin-top':'20px'}),
+            
             dash_table.DataTable(
                     id='tabella',
                     columns=[
@@ -495,7 +496,15 @@ app.layout = html.Div([
                         'text-align': 'center'
                     },
                     style_cell={'textAlign': 'center', 'fontSize':'1.3vw'}
-                )
+                ),
+            
+            html.Div(
+                id='user-input-output', 
+                style={
+                    'margin-top':'20px',
+                    'text-align': 'right'   # Questa proprietà allinea il contenuto del Div a destra
+                }
+            )
         ]
     ),
     
@@ -774,7 +783,9 @@ def motore(date_picker, societa, asset_class, ranking, media,n_clicks):
     
 @app.callback(
     [Output('grafico_dettaglio', 'figure'),
-    Output('tabella', 'data')],
+    Output('tabella', 'data'),
+    Output('user-input-output', 'children'),
+    ],
     [Input('dettaglio_fondo', 'value'),
      Input('date_picker', 'date')]
 )
@@ -894,15 +905,12 @@ def motoreDettaglio(dettaglio_fondo, date_picker):
 
         
            
-        print("URLLL")
-        print(url)
         
         #podio = pd.read_excel(url+'dati_podio.xlsx', sheet_name ='x dashboard')
         podio = pd.read_excel(r'C:\Users\Dionisie.Turcanu\Documents\GitHub\Top_performer\dati_podio.xlsx', sheet_name='x dashboard')
         podio= podio.set_index('isin')
 
 
-        print(podio.columns)
         
         tab = pd.DataFrame(index = ['rk_net','rk_gross','er_net','er_gross','perf'], columns=['Categoria','1M','3M','YTD','1Y','2022','2021','2020'])
         
@@ -939,11 +947,13 @@ def motoreDettaglio(dettaglio_fondo, date_picker):
         
         
         
+        messaggio_nav = 'AUM al ' + str(end_of_previous_month) + ': ' + str(int(podio['nav'].loc[dettaglio_fondo])) + ' B'
         
         
-        return fondo_graph, tabs
+        
+        return fondo_graph, tabs, messaggio_nav
     else: 
-        return {}, ""
+        return {}, "", ""
 
 if __name__ == '__main__':
     app.run_server()

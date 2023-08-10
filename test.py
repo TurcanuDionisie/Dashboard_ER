@@ -10,7 +10,12 @@ podio= podio.set_index('isin')
 tab = pd.DataFrame(index = ['rk_net','rk_gross','er_net','er_gross','perf'], columns=['Categoria','1M','3M','YTD','1Y','2022','2021','2020'])
 
 
+
+
 dettaglio_fondo = 'IE00B1P83V78'
+
+
+str(int(podio['nav'].loc[dettaglio_fondo]))
 
 
 for t in ['1M','3M','YTD','1Y','2022','2021','2020']:
