@@ -906,8 +906,8 @@ def motoreDettaglio(dettaglio_fondo, date_picker):
         
            
         
-        #podio = pd.read_excel(url+'dati_podio.xlsx', sheet_name ='x dashboard')
-        podio = pd.read_excel(r'C:\Users\Dionisie.Turcanu\Documents\GitHub\Top_performer\dati_podio.xlsx', sheet_name='x dashboard')
+        podio = pd.read_excel(url+'dati_podio.xlsx', sheet_name ='x dashboard')
+        #podio = pd.read_excel(r'C:\Users\Dionisie.Turcanu\Documents\GitHub\Top_performer\dati_podio.xlsx', sheet_name='x dashboard')
         podio= podio.set_index('isin')
 
 
