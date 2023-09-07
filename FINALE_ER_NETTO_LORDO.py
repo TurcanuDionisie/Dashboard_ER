@@ -2,17 +2,39 @@ import pandas as pd
 import os
 import matplotlib as plt
 import numpy as np
-directory = r'G:\Analisi e Performance Prodotti\Prodotti\Analisi Offerta di Prodotto\Presidenza Funds Performance & Positioning\2023\2023.07\python'
+import datetime
+import warnings
+warnings.filterwarnings("ignore")
+
+current_date = datetime.date.today()
+year = current_date.year
+month = current_date.month
+
+directory = r'\\med-fls-031\GesFondi\Analisi e Performance Prodotti\Prodotti\Analisi Offerta di Prodotto\Presidenza Funds Performance & Positioning\{year:04d}\{year:04d}.{month:02d}\python\calcolo ER'.format(year=year, month=month)
+
 os.chdir(directory)
 
+from datetime import datetime, timedelta
 
+def last_end_of_month():
+    # Get today's date
+    today = datetime.today()
+    
+    # Subtract one day to get to the previous month
+    previous_month = today.replace(day=1) - timedelta(days=1)
+    
+    # Return the end of the previous month in the desired format
+    return previous_month.strftime('%Y-%m-%d')
+
+date = last_end_of_month()
+date = date.replace('-','_')
 # %% QUOTA NETTA
 file_path = "I:/Documenti/File PMC/In Corso/a&p - universo mgf italiani.xlsx" 
 sheet_name = "Quota Pubb Rettificata"
 qpubb_MGF = pd.read_excel(file_path, sheet_name=sheet_name, index_col=0)
 qpubb_MGF = qpubb_MGF.iloc[2:]
 
-#ciao 
+
 
 file_path = "I:/Documenti/File PMC/In Corso/par - universo ch mif sintesi.xlsx" 
 sheet_name = "Q.ta Pubblicata"
@@ -389,16 +411,16 @@ er_lordo = cum_ret - cum_alfa
 pesi_er_lordo = nav_lordo.iloc[-1]
 
 
-#ANALISI ER PONDERATO SINGOLI PER I TOP CONTRIBUTORS AL PONDERATO AGGREGATO
-cum_ret_singoli = ret_pond_singoli.copy()
-first_valid_indices = cum_ret_singoli.apply(pd.Series.first_valid_index)
+# #ANALISI ER PONDERATO SINGOLI PER I TOP CONTRIBUTORS AL PONDERATO AGGREGATO
+# cum_ret_singoli = ret_pond_singoli.copy()
+# first_valid_indices = cum_ret_singoli.apply(pd.Series.first_valid_index)
 
-for i in ret_pond_singoli.columns:
-    singolo = pd.Series(cum_ret_singoli[i])
-    cum_ret_singoli[i].loc[first_valid_indices[i]] = 1
-    for t in range(1,len(pd.Series(cum_ret_singoli[i])):
-        cum_ret_singoli[i].iloc[t] = cum_ret_singoli[i].iloc[t-1] * ( 1 + ret_pond_singoli[i].iloc[t])
-    cum_ret_singoli[i] = cum_ret_singoli[i] -1
+# for i in ret_pond_singoli.columns:
+#     singolo = pd.Series(cum_ret_singoli[i])
+#     cum_ret_singoli[i].loc[first_valid_indices[i]] = 1
+#     for t in range(1,len(pd.Series(cum_ret_singoli[i])):
+#         cum_ret_singoli[i].iloc[t] = cum_ret_singoli[i].iloc[t-1] * ( 1 + ret_pond_singoli[i].iloc[t])
+#     cum_ret_singoli[i] = cum_ret_singoli[i] -1
 
 
 
@@ -753,48 +775,48 @@ if(dettaglio_fondo in (nome_fondi_netto.index)):
     cum_categoria = cum_categoria[nome_fondi_netto['serve per CAT M*'].loc[dettaglio_fondo]]
     er_netto = cum_quota_netta - cum_categoria
 
-#%%
-dettaglio_fondo = 'IE0005372309'
+# #%%
+# dettaglio_fondo = 'IE0005372309'
 
-podio = pd.read_excel('230510 - Analisi MAP - Elementi per il podio  v2 APRILE 23.xlsx', sheet_name ='x dashboard')
-podio= podio.set_index('isin')
+# podio = pd.read_excel('230510 - Analisi MAP - Elementi per il podio  v2 APRILE 23.xlsx', sheet_name ='x dashboard')
+# podio= podio.set_index('isin')
 
 
-tab = pd.DataFrame(index = ['rk_net','rk_gross','er_net','er_gross','perf'], columns=['Categoria','1M','3M','YTD','1Y','2022','2021','2020'])
+# tab = pd.DataFrame(index = ['rk_net','rk_gross','er_net','er_gross','perf'], columns=['Categoria','1M','3M','YTD','1Y','2022','2021','2020'])
 
-for t in ['1M','3M','YTD','1Y','2022','2021','2020']:
-    tab[t].loc['rk_net'] = str(np.array(round(podio['net_'+t].loc[dettaglio_fondo]*100,2))) +'%'
-    tab[t].loc['rk_gross'] = str(np.array(round(podio['gross_'+t].loc[dettaglio_fondo]*100,2))) +'%'
-    tab[t].loc['er_net'] = str(np.array(round(podio['ernetto_'+t].loc[dettaglio_fondo]*100,2))) +'%'
-    tab[t].loc['er_gross'] = str(np.array(round(podio['erlordo_'+t].loc[dettaglio_fondo]*100,2))) +'%'
-    tab[t].loc['perf'] = str(np.array(round(podio['perf_'+t].loc[dettaglio_fondo]*100,2))) +'%'
+# for t in ['1M','3M','YTD','1Y','2022','2021','2020']:
+#     tab[t].loc['rk_net'] = str(np.array(round(podio['net_'+t].loc[dettaglio_fondo]*100,2))) +'%'
+#     tab[t].loc['rk_gross'] = str(np.array(round(podio['gross_'+t].loc[dettaglio_fondo]*100,2))) +'%'
+#     tab[t].loc['er_net'] = str(np.array(round(podio['ernetto_'+t].loc[dettaglio_fondo]*100,2))) +'%'
+#     tab[t].loc['er_gross'] = str(np.array(round(podio['erlordo_'+t].loc[dettaglio_fondo]*100,2))) +'%'
+#     tab[t].loc['perf'] = str(np.array(round(podio['perf_'+t].loc[dettaglio_fondo]*100,2))) +'%'
 
-tab['Categoria'].loc['rk_net'] = nome_fondi['Asset class'].loc[dettaglio_fondo]
+# tab['Categoria'].loc['rk_net'] = nome_fondi['Asset class'].loc[dettaglio_fondo]
 
-tabs = [{
-     "cat": tab["Categoria"].loc[i],
-     "type": i,
-     "m1": tab["1M"].loc[i],
-     "m3": tab["3M"].loc[i],
-     "ytd": tab["YTD"].loc[i],
-     "y1": tab["1Y"].loc[i],
-     "_2022_": tab["2022"].loc[i],
-     "_2021_": tab["2021"].loc[i],
-     "_2020_": tab["2020"].loc[i],
+# tabs = [{
+#      "cat": tab["Categoria"].loc[i],
+#      "type": i,
+#      "m1": tab["1M"].loc[i],
+#      "m3": tab["3M"].loc[i],
+#      "ytd": tab["YTD"].loc[i],
+#      "y1": tab["1Y"].loc[i],
+#      "_2022_": tab["2022"].loc[i],
+#      "_2021_": tab["2021"].loc[i],
+#      "_2020_": tab["2020"].loc[i],
      
- }for i in tab.index]
+#  }for i in tab.index]
 
 
 # %% EXCEL
 
-dataframes = [er_lordo,er_netto, er_lordo_fi,er_lordo_ma, er_lordo_eq, er_netto_fi,er_netto_ma,er_netto_eq]
+# dataframes = [er_lordo,er_netto, er_lordo_fi,er_lordo_ma, er_lordo_eq, er_netto_fi,er_netto_ma,er_netto_eq]
 
 
-serie_unite = pd.concat(dataframes, ignore_index=False, axis=1)
+# serie_unite = pd.concat(dataframes, ignore_index=False, axis=1)
 
-serie_unite.columns = ["er_lordo","er_netto","er_lordo_fi","er_lordo_ma","er_lordo_eq","er_netto_fi","er_netto_ma","er_netto_eq"]
-file_name = "er_netto_lordo_finale_30_06.xlsx"
-serie_unite.to_excel(file_name)
+# serie_unite.columns = ["er_lordo","er_netto","er_lordo_fi","er_lordo_ma","er_lordo_eq","er_netto_fi","er_netto_ma","er_netto_eq"]
+# file_name = f"er_netto_lordo_finale_{date}.xlsx"
+# serie_unite.to_excel(file_name)
 
 dataframes = [pesi_er_lordo,pesi_er_netto, pesi_er_lordo_fi,pesi_er_lordo_ma, pesi_er_lordo_eq, pesi_er_netto_fi,pesi_er_netto_ma,pesi_er_netto_eq]
 
@@ -802,6 +824,6 @@ dataframes = [pesi_er_lordo,pesi_er_netto, pesi_er_lordo_fi,pesi_er_lordo_ma, pe
 serie_unite = pd.concat(dataframes, ignore_index=False, axis=1)
 
 serie_unite.columns = ["pesi_er_lordo","pesi_er_netto","pesi_er_lordo_fi","pesi_er_lordo_ma","pesi_er_lordo_eq","pesi_er_netto_fi","pesi_er_netto_ma","pesi_er_netto_eq"]
-file_name = "pesi_finale_30_06.xlsx"
+file_name = f"pesi_finale_{date}.xlsx"
 serie_unite.to_excel(file_name)
 
