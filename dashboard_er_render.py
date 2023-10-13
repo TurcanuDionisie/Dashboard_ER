@@ -21,6 +21,7 @@ import requests
 
 
 url = 'https://raw.githubusercontent.com/TurcanuDionisie/Dashboard_ER/main/'
+
 #%% CARICAMENTO DATI SOTTOSTANTI E NON VARIABILI
 
 #  QUOTA NETTA
