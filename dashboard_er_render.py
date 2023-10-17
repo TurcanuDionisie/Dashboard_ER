@@ -734,8 +734,8 @@ def motore(date_picker, societa, asset_class, ranking, media,n_clicks):
         
         er_graph = go.Figure()
         
-        er_graph.add_trace(go.Scatter(x=er_netto.index, y=er_netto, mode='lines', name='ER Netto', line=dict(color='lightsteelblue'),hovertemplate='(%{x}, %{y:.2f}%)'))
-        er_graph.add_trace(go.Scatter(x=er_lordo.index,y=er_lordo, mode='lines', name='ER Lordo', line=dict(color='midnightblue'),hovertemplate='(%{x}, %{y:.2f}%)'))
+        er_graph.add_trace(go.Scatter(x=er_netto.index, y=er_netto, mode='lines', name='Net Perf vs Cat M*', line=dict(color='lightsteelblue'),hovertemplate='(%{x}, %{y:.2f}%)'))
+        er_graph.add_trace(go.Scatter(x=er_lordo.index,y=er_lordo, mode='lines', name='Gross Perf vs SAA', line=dict(color='midnightblue'),hovertemplate='(%{x}, %{y:.2f}%)'))
                 
 
 
@@ -865,10 +865,10 @@ def motoreDettaglio(dettaglio_fondo, date_picker):
         fondo_graph = go.Figure()
         
         if(dettaglio_fondo in (nome_fondi_netto.index)):
-            fondo_graph.add_trace(go.Scatter(x=er_netto.index, y=er_netto, mode='lines', name='ER Netto', line=dict(color='lightsteelblue'), hovertemplate='(%{x}, %{y:.2f}%)'))
+            fondo_graph.add_trace(go.Scatter(x=er_netto.index, y=er_netto, mode='lines', name='Net Perf vs Cat M*', line=dict(color='lightsteelblue'), hovertemplate='(%{x}, %{y:.2f}%)'))
         
         if(dettaglio_fondo in (nome_fondi_lordo.index)):
-            fondo_graph.add_trace(go.Scatter(x=er_lordo.index,y=er_lordo, mode='lines', name='ER Lordo', line=dict(color='midnightblue'), hovertemplate='(%{x}, %{y:.2f}%)'))
+            fondo_graph.add_trace(go.Scatter(x=er_lordo.index,y=er_lordo, mode='lines', name='Gross Perf vs SAA', line=dict(color='midnightblue'), hovertemplate='(%{x}, %{y:.2f}%)'))
         
         
         
