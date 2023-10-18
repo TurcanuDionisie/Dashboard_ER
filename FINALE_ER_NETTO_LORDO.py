@@ -10,7 +10,8 @@ current_date = datetime.date.today()
 year = current_date.year
 month = current_date.month
 
-directory = r'\\med-fls-031\GesFondi\Analisi e Performance Prodotti\Prodotti\Analisi Offerta di Prodotto\Presidenza Funds Performance & Positioning\{year:04d}\{year:04d}.{month:02d}\python\calcolo ER'.format(year=year, month=month)
+directory = r'\\med-fls-031\GesFondi\Analisi e Performance Prodotti\Prodotti\Analisi Offerta di Prodotto\Presidenza Funds Performance & Positioning\{year:04d}\{year:04d}.{month:02d}\python'.format(year=year, month=month)
+url = 'https://raw.githubusercontent.com/TurcanuDionisie/Dashboard_ER/main/'
 
 os.chdir(directory)
 
@@ -206,7 +207,7 @@ cat_morningstar = cat_morningstar.apply(pd.to_numeric)
 
 # %% FILE DECODIFICA ALL 
 
-codifiche_all = pd.read_excel('codifiche.xlsx', sheet_name='codifica').set_index('Isin')
+codifiche_all = pd.read_excel(url+'codifiche.xlsx', sheet_name='codifica').set_index('Isin')
 
 codifiche = codifiche_all[(codifiche_all ['BMK'] == 'SI')]
 #%% LORDO
