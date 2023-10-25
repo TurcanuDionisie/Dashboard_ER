@@ -4,6 +4,12 @@ import matplotlib as plt
 import numpy as np
 import datetime
 import warnings
+
+import io
+import base64
+import matplotlib.pyplot as plt
+import plotly.graph_objects as go
+
 warnings.filterwarnings("ignore")
 
 current_date = datetime.date.today()
@@ -29,6 +35,12 @@ def last_end_of_month():
 
 date = last_end_of_month()
 date = date.replace('-','_')
+
+
+#%% DATA INIZIO E DATA FINE
+data_inizio = '30/12/2022'
+data_fine = '29/09/2023'
+
 # %% QUOTA NETTA
 file_path = "I:/Documenti/File PMC/In Corso/a&p - universo mgf italiani.xlsx" 
 sheet_name = "Quota Pubb Rettificata"
@@ -340,10 +352,10 @@ ret_bmk = bmk.pct_change()[1:]
 ret_categoria = cat_morningstar.pct_change()[1:]
 
 #filtro per data inizio
-ret_quota_netta = ret_quota_netta[ret_quota_netta.index >= "06/30/2022"]
-ret_quota_lorda = ret_quota_lorda[ret_quota_lorda.index >= "06/30/2022"]
-ret_bmk = ret_bmk[ret_bmk.index >= "06/30/2022"]
-ret_categoria = ret_categoria[ret_categoria.index >= "06/30/2022"]
+ret_quota_netta = ret_quota_netta[ret_quota_netta.index >= data_inizio]
+ret_quota_lorda = ret_quota_lorda[ret_quota_lorda.index >= data_inizio]
+ret_bmk = ret_bmk[ret_bmk.index >= data_inizio]
+ret_categoria = ret_categoria[ret_categoria.index >= data_inizio]
 
 #%% calcolo cumulative da data inizio
 
@@ -385,7 +397,7 @@ decodifica_bmk = codifiche[['serve per BMK']]
 map_dict = decodifica_bmk.to_dict().get('serve per BMK')
 
 isin = codifiche[(codifiche['BMK'] == 'SI')].index
-ret = ret_quota_lorda[isin][ret_quota_lorda.index >= '06/30/2022']
+ret = ret_quota_lorda[isin][ret_quota_lorda.index >= data_inizio]
 
 nav_lordo = nav_lordo_all[isin].copy()
 for t in nav_lordo.index:
@@ -395,10 +407,10 @@ alfa = ret.copy()
 for i in ret.columns:
     alfa[i] = ret_bmk[map_dict[i]]
 
-ret_pond = ret * nav_lordo[isin][nav_lordo.index >= '06/30/2022']
+ret_pond = ret * nav_lordo[isin][nav_lordo.index >= data_inizio]
 ret_pond_singoli = ret_pond.copy()
 ret_pond = ret_pond.sum(axis=1)
-alfa_pond = alfa * nav_lordo[isin][nav_lordo.index >= '06/30/2022']
+alfa_pond = alfa * nav_lordo[isin][nav_lordo.index >= data_inizio]
 alfa_pond_singoli = alfa_pond.copy()
 alfa_pond = alfa_pond.sum(axis=1)
 
@@ -444,7 +456,7 @@ decodifica_bmk = codifiche[['serve per BMK']]
 map_dict = decodifica_bmk.to_dict().get('serve per BMK')
 
 isin = codifiche[(codifiche['BMK'] == 'SI')].index
-ret = ret_quota_lorda[isin][ret_quota_lorda.index >= '06/30/2022']
+ret = ret_quota_lorda[isin][ret_quota_lorda.index >= data_inizio]
 
 nav_lordo = nav_lordo_all[isin].copy()
 for t in nav_lordo.index:
@@ -454,9 +466,9 @@ alfa = ret.copy()
 for i in ret.columns:
     alfa[i] = ret_bmk[map_dict[i]]
 
-ret_pond = ret * nav_lordo[isin][nav_lordo.index >= '06/30/2022']
+ret_pond = ret * nav_lordo[isin][nav_lordo.index >= data_inizio]
 ret_pond = ret_pond.sum(axis=1)
-alfa_pond = alfa * nav_lordo[isin][nav_lordo.index >= '06/30/2022']
+alfa_pond = alfa * nav_lordo[isin][nav_lordo.index >= data_inizio]
 alfa_pond = alfa_pond.sum(axis=1)
 
 cum_ret = pd.Series(index = ret_pond.index)
@@ -483,7 +495,7 @@ decodifica_bmk = codifiche[['serve per BMK']]
 map_dict = decodifica_bmk.to_dict().get('serve per BMK')
 
 isin = codifiche[(codifiche['BMK'] == 'SI')].index
-ret = ret_quota_lorda[isin][ret_quota_lorda.index >= '06/30/2022']
+ret = ret_quota_lorda[isin][ret_quota_lorda.index >= data_inizio]
 
 nav_lordo = nav_lordo_all[isin].copy()
 for t in nav_lordo.index:
@@ -493,9 +505,9 @@ alfa = ret.copy()
 for i in ret.columns:
     alfa[i] = ret_bmk[map_dict[i]]
 
-ret_pond = ret * nav_lordo[isin][nav_lordo.index >= '06/30/2022']
+ret_pond = ret * nav_lordo[isin][nav_lordo.index >= data_inizio]
 ret_pond = ret_pond.sum(axis=1)
-alfa_pond = alfa * nav_lordo[isin][nav_lordo.index >= '06/30/2022']
+alfa_pond = alfa * nav_lordo[isin][nav_lordo.index >= data_inizio]
 alfa_pond = alfa_pond.sum(axis=1)
 
 cum_ret = pd.Series(index = ret_pond.index)
@@ -522,7 +534,7 @@ decodifica_bmk = codifiche[['serve per BMK']]
 map_dict = decodifica_bmk.to_dict().get('serve per BMK')
 
 isin = codifiche[(codifiche['BMK'] == 'SI')].index
-ret = ret_quota_lorda[isin][ret_quota_lorda.index >= '06/30/2022']
+ret = ret_quota_lorda[isin][ret_quota_lorda.index >= data_inizio]
 
 nav_lordo = nav_lordo_all[isin].copy()
 for t in nav_lordo.index:
@@ -532,9 +544,9 @@ alfa = ret.copy()
 for i in ret.columns:
     alfa[i] = ret_bmk[map_dict[i]]
 
-ret_pond = ret * nav_lordo[isin][nav_lordo.index >= '06/30/2022']
+ret_pond = ret * nav_lordo[isin][nav_lordo.index >= data_inizio]
 ret_pond = ret_pond.sum(axis=1)
-alfa_pond = alfa * nav_lordo[isin][nav_lordo.index >= '06/30/2022']
+alfa_pond = alfa * nav_lordo[isin][nav_lordo.index >= data_inizio]
 alfa_pond = alfa_pond.sum(axis=1)
 
 cum_ret = pd.Series(index = ret_pond.index)
@@ -561,7 +573,7 @@ decodifica_bmk = codifiche[['serve per CAT M*']]
 map_dict = decodifica_bmk.to_dict().get('serve per CAT M*')
 
 isin = codifiche[(codifiche['CAT'] == 'SI')].index
-ret = ret_quota_netta[isin][ret_quota_netta.index >= '06/30/2022']
+ret = ret_quota_netta[isin][ret_quota_netta.index >= data_inizio]
 
 nav_netto = nav_netto_all[isin].copy()
 for t in nav_netto.index:
@@ -571,9 +583,9 @@ alfa = ret.copy()
 for i in ret.columns:
     alfa[i] = ret_categoria[map_dict[i]]
 
-ret_pond = ret * nav_netto[isin][nav_netto.index >= '06/30/2022']
+ret_pond = ret * nav_netto[isin][nav_netto.index >= data_inizio]
 ret_pond = ret_pond.sum(axis=1)
-alfa_pond = alfa * nav_netto[isin][nav_netto.index >= '06/30/2022']
+alfa_pond = alfa * nav_netto[isin][nav_netto.index >= data_inizio]
 alfa_pond = alfa_pond.sum(axis=1)
 
 cum_ret = pd.Series(index = ret_pond.index)
@@ -600,7 +612,7 @@ decodifica_bmk = codifiche[['serve per CAT M*']]
 map_dict = decodifica_bmk.to_dict().get('serve per CAT M*')
 
 isin = codifiche[(codifiche['CAT'] == 'SI')].index
-ret = ret_quota_netta[isin][ret_quota_netta.index >= '06/30/2022']
+ret = ret_quota_netta[isin][ret_quota_netta.index >= data_inizio]
 
 nav_netto = nav_netto_all[isin].copy()
 for t in nav_netto.index:
@@ -610,9 +622,9 @@ alfa = ret.copy()
 for i in ret.columns:
     alfa[i] = ret_categoria[map_dict[i]]
 
-ret_pond = ret * nav_netto[isin][nav_netto.index >= '06/30/2022']
+ret_pond = ret * nav_netto[isin][nav_netto.index >= data_inizio]
 ret_pond = ret_pond.sum(axis=1)
-alfa_pond = alfa * nav_netto[isin][nav_netto.index >= '06/30/2022']
+alfa_pond = alfa * nav_netto[isin][nav_netto.index >= data_inizio]
 alfa_pond = alfa_pond.sum(axis=1)
 
 cum_ret = pd.Series(index = ret_pond.index)
@@ -639,7 +651,7 @@ decodifica_bmk = codifiche[['serve per CAT M*']]
 map_dict = decodifica_bmk.to_dict().get('serve per CAT M*')
 
 isin = codifiche[(codifiche['CAT'] == 'SI')].index
-ret = ret_quota_netta[isin][ret_quota_netta.index >= '06/30/2022']
+ret = ret_quota_netta[isin][ret_quota_netta.index >= data_inizio]
 
 nav_netto = nav_netto_all[isin].copy()
 for t in nav_netto.index:
@@ -649,9 +661,9 @@ alfa = ret.copy()
 for i in ret.columns:
     alfa[i] = ret_categoria[map_dict[i]]
 
-ret_pond = ret * nav_netto[isin][nav_netto.index >= '06/30/2022']
+ret_pond = ret * nav_netto[isin][nav_netto.index >= data_inizio]
 ret_pond = ret_pond.sum(axis=1)
-alfa_pond = alfa * nav_netto[isin][nav_netto.index >= '06/30/2022']
+alfa_pond = alfa * nav_netto[isin][nav_netto.index >= data_inizio]
 alfa_pond = alfa_pond.sum(axis=1)
 
 cum_ret = pd.Series(index = ret_pond.index)
@@ -678,7 +690,7 @@ decodifica_bmk = codifiche[['serve per CAT M*']]
 map_dict = decodifica_bmk.to_dict().get('serve per CAT M*')
 
 isin = codifiche[(codifiche['CAT'] == 'SI')].index
-ret = ret_quota_netta[isin][ret_quota_netta.index >= '06/30/2022']
+ret = ret_quota_netta[isin][ret_quota_netta.index >= data_inizio]
 
 nav_netto = nav_netto_all[isin].copy()
 for t in nav_netto.index:
@@ -688,9 +700,9 @@ alfa = ret.copy()
 for i in ret.columns:
     alfa[i] = ret_categoria[map_dict[i]]
 
-ret_pond = ret * nav_netto[isin][nav_netto.index >= '06/30/2022']
+ret_pond = ret * nav_netto[isin][nav_netto.index >= data_inizio]
 ret_pond = ret_pond.sum(axis=1)
-alfa_pond = alfa * nav_netto[isin][nav_netto.index >= '06/30/2022']
+alfa_pond = alfa * nav_netto[isin][nav_netto.index >= data_inizio]
 alfa_pond = alfa_pond.sum(axis=1)
 
 cum_ret = pd.Series(index = ret_pond.index)
@@ -710,135 +722,226 @@ cum_alfa = cum_alfa -1
 er_netto_eq = cum_ret - cum_alfa
 pesi_er_netto_eq = nav_netto.iloc[-1]
 
+#%% unisco netto e lordo per macroragruppamenti
 
+all_funds = pd.DataFrame()
+all_funds['Net Perf vs Cat M*'] = er_netto
+all_funds['Gross Perf vs SAA'] = er_lordo
+all_funds = all_funds[all_funds.index <= data_fine]
 
+eq_funds = pd.DataFrame()
+eq_funds['Net Perf vs Cat M*'] = er_netto_eq
+eq_funds['Gross Perf vs SAA'] = er_lordo_eq
+eq_funds = eq_funds[eq_funds.index <= data_fine]
 
+fi_funds = pd.DataFrame()
+fi_funds['Net Perf vs Cat M*'] = er_netto_fi
+fi_funds['Gross Perf vs SAA'] = er_lordo_fi
+fi_funds = fi_funds[fi_funds.index <= data_fine]
 
-# %% DETTAGLIO FONDI
-
-
+ma_funds = pd.DataFrame()
+ma_funds['Net Perf vs Cat M*'] = er_netto_ma
+ma_funds['Gross Perf vs SAA'] = er_lordo_ma
+ma_funds = ma_funds[ma_funds.index <= data_fine]
+#%% PER SINGOLO FONDO
 nome_fondi = codifiche_all[(codifiche_all['CAT'] == 'SI') | (codifiche_all['BMK'] == 'SI')] 
-
+names_isin_dict = nome_fondi['Nome 2'].to_dict()
+isin_names_dict = nome_fondi.set_index('Nome 2')['Isin.1'].to_dict()
 
 ret_quota_netta = quota_netta.pct_change()[1:]
 ret_quota_lorda = quota_lorda.pct_change()[1:]
 ret_bmk = bmk.pct_change()[1:]
 ret_categoria = cat_morningstar.pct_change()[1:]
 
+er_funds_dict = {}
 
-date_picker = "01/01/2023"
-dettaglio_fondo = 'IE00B9CQ9016'
-
-
-#filtro per data inizio
-ret_quota_netta = ret_quota_netta[ret_quota_netta.index >= date_picker]
-ret_quota_lorda = ret_quota_lorda[ret_quota_lorda.index >= date_picker]
-ret_bmk = ret_bmk[ret_bmk.index >= date_picker]
-ret_categoria = ret_categoria[ret_categoria.index >= date_picker]
+date_picker = data_inizio
 
 
-#NETTA
-cum_quota_netta = pd.DataFrame(columns=ret_quota_netta.columns, index = ret_quota_netta.index)
-cum_quota_netta.iloc[0] = 1
-for i in range(1,len(cum_quota_netta)):
-    cum_quota_netta.iloc[i] = cum_quota_netta.iloc[i-1] * ( 1 + ret_quota_netta.iloc[i])
-cum_quota_netta = cum_quota_netta -1
+for isin in names_isin_dict.keys():
+
+    dettaglio_fondo = isin
     
-#LORDA    
-cum_quota_lorda = pd.DataFrame(columns=ret_quota_lorda.columns, index = ret_quota_lorda.index)
-cum_quota_lorda.iloc[0] = 1
-for i in range(1,len(cum_quota_lorda)):
-    cum_quota_lorda.iloc[i] = cum_quota_lorda.iloc[i-1] * ( 1 + ret_quota_lorda.iloc[i])
-cum_quota_lorda = cum_quota_lorda -1
+    
+    #filtro per data inizio
+    ret_quota_netta = ret_quota_netta[ret_quota_netta.index >= date_picker]
+    ret_quota_lorda = ret_quota_lorda[ret_quota_lorda.index >= date_picker]
+    ret_bmk = ret_bmk[ret_bmk.index >= date_picker]
+    ret_categoria = ret_categoria[ret_categoria.index >= date_picker]
+    
+    
+    #NETTA
+    cum_quota_netta = pd.DataFrame(columns=ret_quota_netta.columns, index = ret_quota_netta.index)
+    cum_quota_netta.iloc[0] = 1
+    for i in range(1,len(cum_quota_netta)):
+        cum_quota_netta.iloc[i] = cum_quota_netta.iloc[i-1] * ( 1 + ret_quota_netta.iloc[i])
+    cum_quota_netta = cum_quota_netta -1
+        
+    #LORDA    
+    cum_quota_lorda = pd.DataFrame(columns=ret_quota_lorda.columns, index = ret_quota_lorda.index)
+    cum_quota_lorda.iloc[0] = 1
+    for i in range(1,len(cum_quota_lorda)):
+        cum_quota_lorda.iloc[i] = cum_quota_lorda.iloc[i-1] * ( 1 + ret_quota_lorda.iloc[i])
+    cum_quota_lorda = cum_quota_lorda -1
+    
+    #BMK
+    cum_bmk = pd.DataFrame(columns=ret_bmk.columns, index = ret_bmk.index)
+    cum_bmk.iloc[0] = 1
+    for i in range(1,len(cum_bmk)):
+        cum_bmk.iloc[i] = cum_bmk.iloc[i-1] * ( 1 + ret_bmk.iloc[i])
+    cum_bmk = cum_bmk -1
+    
+    #CATEGORIA
+    cum_categoria = pd.DataFrame(columns=ret_categoria.columns, index = ret_categoria.index)
+    cum_categoria.iloc[0] = 1
+    for i in range(1,len(cum_categoria)):
+        cum_categoria.iloc[i] = cum_categoria.iloc[i-1] * ( 1 + ret_categoria.iloc[i])
+    cum_categoria = cum_categoria -1
+    
+        
+    nome_fondi_lordo = nome_fondi[nome_fondi['BMK'] == 'SI']
+    
+    nome_fondi_netto = nome_fondi[nome_fondi['CAT'] == 'SI']
+    
+       
+    if(dettaglio_fondo in (nome_fondi_lordo.index)):
+        cum_quota_lorda = cum_quota_lorda[dettaglio_fondo]
+        cum_bmk = cum_bmk[nome_fondi_lordo['serve per BMK'].loc[dettaglio_fondo]]
+        er_fund_lordo = cum_quota_lorda - cum_bmk
+        
+    if(dettaglio_fondo in (nome_fondi_netto.index)):
+        cum_quota_netta = cum_quota_netta[dettaglio_fondo]
+        cum_categoria = cum_categoria[nome_fondi_netto['serve per CAT M*'].loc[dettaglio_fondo]]
+        er_fund_netto = cum_quota_netta - cum_categoria
+    
+    # UNIFICO DATE
+    common_dates = er_fund_netto.index.intersection(er_fund_lordo.index)
+    er_fund_netto = er_fund_netto.loc[common_dates]
+    er_fund_lordo = er_fund_lordo.loc[common_dates]
+    
+    er_fund = pd.DataFrame()
+    er_fund['Net Perf vs Cat M*'] = er_fund_netto
+    er_fund['Gross Perf vs SAA'] = er_fund_lordo
+    er_fund = er_fund[er_fund.index <= data_fine]
+    
+    
+    er_funds_dict[isin] = er_fund
+    
 
-#BMK
-cum_bmk = pd.DataFrame(columns=ret_bmk.columns, index = ret_bmk.index)
-cum_bmk.iloc[0] = 1
-for i in range(1,len(cum_bmk)):
-    cum_bmk.iloc[i] = cum_bmk.iloc[i-1] * ( 1 + ret_bmk.iloc[i])
-cum_bmk = cum_bmk -1
-
-#CATEGORIA
-cum_categoria = pd.DataFrame(columns=ret_categoria.columns, index = ret_categoria.index)
-cum_categoria.iloc[0] = 1
-for i in range(1,len(cum_categoria)):
-    cum_categoria.iloc[i] = cum_categoria.iloc[i-1] * ( 1 + ret_categoria.iloc[i])
-cum_categoria = cum_categoria -1
-
-
-
-nome_fondi_lordo = nome_fondi[nome_fondi['BMK'] == 'SI']
-
-nome_fondi_netto = nome_fondi[nome_fondi['CAT'] == 'SI']
-
-
-
-if(dettaglio_fondo in (nome_fondi_lordo.index)):
-    cum_quota_lorda = cum_quota_lorda[dettaglio_fondo]
-    cum_bmk = cum_bmk[nome_fondi_lordo['serve per BMK'].loc[dettaglio_fondo]]
-    er_lordo = cum_quota_lorda - cum_bmk
-
-
-
-if(dettaglio_fondo in (nome_fondi_netto.index)):
-    cum_quota_netta = cum_quota_netta[dettaglio_fondo]
-    cum_categoria = cum_categoria[nome_fondi_netto['serve per CAT M*'].loc[dettaglio_fondo]]
-    er_netto = cum_quota_netta - cum_categoria
-
-# UNIFICO DATE
-common_dates = er_netto.index.intersection(er_lordo.index)
-er_netto = er_netto.loc[common_dates]
-er_lordo = er_lordo.loc[common_dates]
-
-# #%%
-# dettaglio_fondo = 'IE0005372309'
-
-# podio = pd.read_excel('230510 - Analisi MAP - Elementi per il podio  v2 APRILE 23.xlsx', sheet_name ='x dashboard')
-# podio= podio.set_index('isin')
-
-
-# tab = pd.DataFrame(index = ['rk_net','rk_gross','er_net','er_gross','perf'], columns=['Categoria','1M','3M','YTD','1Y','2022','2021','2020'])
-
-# for t in ['1M','3M','YTD','1Y','2022','2021','2020']:
-#     tab[t].loc['rk_net'] = str(np.array(round(podio['net_'+t].loc[dettaglio_fondo]*100,2))) +'%'
-#     tab[t].loc['rk_gross'] = str(np.array(round(podio['gross_'+t].loc[dettaglio_fondo]*100,2))) +'%'
-#     tab[t].loc['er_net'] = str(np.array(round(podio['ernetto_'+t].loc[dettaglio_fondo]*100,2))) +'%'
-#     tab[t].loc['er_gross'] = str(np.array(round(podio['erlordo_'+t].loc[dettaglio_fondo]*100,2))) +'%'
-#     tab[t].loc['perf'] = str(np.array(round(podio['perf_'+t].loc[dettaglio_fondo]*100,2))) +'%'
-
-# tab['Categoria'].loc['rk_net'] = nome_fondi['Asset class'].loc[dettaglio_fondo]
-
-# tabs = [{
-#      "cat": tab["Categoria"].loc[i],
-#      "type": i,
-#      "m1": tab["1M"].loc[i],
-#      "m3": tab["3M"].loc[i],
-#      "ytd": tab["YTD"].loc[i],
-#      "y1": tab["1Y"].loc[i],
-#      "_2022_": tab["2022"].loc[i],
-#      "_2021_": tab["2021"].loc[i],
-#      "_2020_": tab["2020"].loc[i],
-     
-#  }for i in tab.index]
+result_dict = {key1: er_funds_dict[value1] for key1, value1 in isin_names_dict.items()}
 
 
-# %% EXCEL
 
-# dataframes = [er_lordo,er_netto, er_lordo_fi,er_lordo_ma, er_lordo_eq, er_netto_fi,er_netto_ma,er_netto_eq]
+#%%
+dictionary = {'All Funds (NAV weighted)': all_funds, 'Equity Funds (NAV weighted)': eq_funds, 'Fixed Income Funds (NAV weighted)': fi_funds, 'Multi Asset Funds (NAV weighted)': ma_funds }
+dictionary.update(result_dict)
+
+# Function to create a sample Plotly figure and return it as an HTML div
+def create_plot(i):
+    er_graph = go.Figure()
+    er_graph.add_trace(go.Scatter(x=dictionary[i].index, y=dictionary[i]['Net Perf vs Cat M*'], mode='lines', name='Net Perf vs Cat M*', line=dict(color='lightsteelblue'), hovertemplate='(%{x}, %{y:.3%})'))
+    er_graph.add_trace(go.Scatter(x=dictionary[i].index, y=dictionary[i]['Gross Perf vs SAA'], mode='lines', name='Gross Perf vs SAA', line=dict(color='midnightblue'), hovertemplate='(%{x}, %{y:.3%})'))
+
+    er_graph.update_layout(
+        legend=dict(
+            orientation="h",
+            yanchor="top",
+            y=1.07,
+            xanchor="center",
+            x=0.15,
+            font=dict(size=15)
+        ),
+        title={
+            'text': f'Dettaglio ER dal ' + str(dictionary[i].index[0].strftime("%Y-%m-%d")) + ' al ' + str(dictionary[i].index[-1].strftime("%Y-%m-%d")),
+            'font': {'size': 24},
+            'x': 0.5,
+            'y': 0.95,
+            'xanchor': 'center',
+            'yanchor': 'top'
+        },
+        paper_bgcolor='rgba(0,0,0,0)',  # Set the overall background to transparent
+        plot_bgcolor='rgba(0,0,0,0)',  # Set the plotting area background to transparent
+        xaxis=dict(showgrid=False),
+        yaxis=dict(
+            showgrid=True,
+            gridcolor='lightgrey',
+            gridwidth=1,
+            tickwidth=2,
+            tickformat=',.2%',  # Rounded to 2 decimals and displayed as a percentage
+            zerolinecolor='lightcoral',
+            zerolinewidth=1
+        )
+    )
+
+    # Convert the Plotly figure to an HTML div
+    plot_div = er_graph.to_html(full_html=False)
+
+    return plot_div
+
+# Create the HTML content with a search bar
+html_content = """<!DOCTYPE html>
+<html>
+<head>
+    <title>100 Charts</title>
+    <style>
+        .chart-title {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Chart Search</h1>
+    <form id="search-form" action="#">
+        <label for="search-input">Search:</label>
+        <input type="text" id="search-input" oninput="searchCharts()">
+    </form>
+    <ul id="chart-list">
+"""
+
+for chart_name in dictionary.keys():
+    html_content += f'<li class="chart-item"><a href="#{chart_name}">{chart_name}</a></li>'
+
+html_content += """
+    </ul>
+</body>
+<script>
+    function searchCharts() {
+        var input = document.getElementById('search-input').value.toLowerCase();
+        var chartList = document.getElementById('chart-list');
+        var chartItems = chartList.getElementsByClassName('chart-item');
+        
+        for (var i = 0; i < chartItems.length; i++) {
+            var chartName = chartItems[i].innerText.toLowerCase();
+            if (chartName.includes(input)) {
+                chartItems[i].style.display = 'block';
+            } else {
+                chartItems[i].style.display = 'none';
+            }
+        }
+    }
+</script>
+</html>
+"""
 
 
-# serie_unite = pd.concat(dataframes, ignore_index=False, axis=1)
 
-# serie_unite.columns = ["er_lordo","er_netto","er_lordo_fi","er_lordo_ma","er_lordo_eq","er_netto_fi","er_netto_ma","er_netto_eq"]
-# file_name = f"er_netto_lordo_finale_{date}.xlsx"
-# serie_unite.to_excel(file_name)
+for i in dictionary.keys():
+    plot_data = create_plot(i)
+    html_content += f"""
+    <h2 id="{i}">{i}</h2>
+    {plot_data}
+    """
 
-dataframes = [pesi_er_lordo,pesi_er_netto, pesi_er_lordo_fi,pesi_er_lordo_ma, pesi_er_lordo_eq, pesi_er_netto_fi,pesi_er_netto_ma,pesi_er_netto_eq]
+html_content += """
+</body>
+</html>
+"""
 
 
-serie_unite = pd.concat(dataframes, ignore_index=False, axis=1)
+# Save the HTML content to a file
+with open("charts.html", "w") as file:
+    file.write(html_content)
 
-serie_unite.columns = ["pesi_er_lordo","pesi_er_netto","pesi_er_lordo_fi","pesi_er_lordo_ma","pesi_er_lordo_eq","pesi_er_netto_fi","pesi_er_netto_ma","pesi_er_netto_eq"]
-file_name = f"pesi_finale_{date}.xlsx"
-serie_unite.to_excel(file_name)
+print("HTML file 'charts.html' has been created.")
+
 

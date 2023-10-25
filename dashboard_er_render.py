@@ -195,6 +195,16 @@ cat_morningstar = cat_morningstar.iloc[2:]
 
 cat_morningstar = cat_morningstar.apply(pd.to_numeric) 
 
+# OMOGEINIZZO LE DATE TRA PERFORMANCE FONDI, NAV, BMK, GROSS/NET
+
+common_dates = quota_netta.index.intersection(quota_lorda.index).intersection(df_nav.index).intersection(bmk.index).intersection(cat_morningstar.index)
+
+quota_netta = quota_netta.loc[common_dates]
+quota_lorda = quota_lorda.loc[common_dates]
+df_nav = df_nav.loc[common_dates]
+bmk = bmk.loc[common_dates]
+cat_morningstar = cat_morningstar.loc[common_dates]
+
 
 #FILE DECODIFICA ALL 
 
@@ -382,7 +392,8 @@ app.layout = html.Div([
             [   
                 dcc.DatePickerSingle(
                     id='date_picker',
-                    date=None
+                    date=None,
+                    display_format='DD/MM/YYYY'
                 ),
                 html.Div(id='date_error')
             ]
@@ -858,9 +869,10 @@ def motoreDettaglio(dettaglio_fondo, date_picker):
             cum_categoria = cum_categoria[nome_fondi_netto['serve per CAT M*'].loc[dettaglio_fondo]]
             er_netto = cum_quota_netta - cum_categoria
             
+        common_dates = er_netto.index.intersection(er_lordo.index)
+        er_netto = er_netto.loc[common_dates]
+        er_lordo = er_lordo.loc[common_dates]
         
-    
-    
         # GRAFICO DETTAGLIO FONDO
         fondo_graph = go.Figure()
         
